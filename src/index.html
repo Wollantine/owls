@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>OWLS</title>
+  <!--link rel="stylesheet" href="css/normalize.css"></link>
+  <link rel="stylesheet" href="css/unsemantic-grid-responsive.css"></link-->
+  <script src="bundle.js" type="text/javascript"></script>
+</head>
+
+<body>
+<div class="content grid-container" ng-app="owls">
+
+  <!--div ng-view></div-->
+
+  <toolbar></toolbar>
+
+  <md-content>
+  </md-content>
+
+  <md-input-container class="md-block" flex-gt-sm>
+    <label>Name:</label>
+    <input type="text" ng-model="yourName">
+  </md-input-container>
+  <hr>
+  <h1>Hello {{yourName}}!</h1>
+
+  <!--div
+    ng-controller="FooterCtrl"
+    class="footer"
+    >Angular &amp; Browserify Example, Version: {{version}} <a
+      href="#/imprint">[Imprint]</a>
+  </div-->
+
+</div>
+
+
+</body>
+</html>

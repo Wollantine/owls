@@ -1,0 +1,55 @@
+<md-toolbar ng-controller="ToolbarCtrl as ctrl">
+  <div class="md-toolbar-tools">
+
+    <md-menu>
+      <md-button ng-click="ctrl.openMenu($mdOpenMenu, $event)">
+        {{ctrl.currentList}}
+        <md-icon>arrow_drop_down</md-icon>
+      </md-button>
+      <md-menu-content width="4">
+        <md-menu-item ng-repeat="list in ctrl.lists | filter : ctrl.currentList : ctrl.listsFilter">
+          <md-button md-prevent-menu-close="md-prevent-menu-close" ng-click="ctrl.switchList($event, list)">
+            {{list}}
+          </md-button>
+        </md-menu-item>
+        <md-menu-divider></md-menu-divider>
+        <md-menu-item>
+          <md-button>
+            <md-icon>add</md-icon>
+            Add list
+          </md-button>
+        </md-menu-item>
+      </md-menu-content>
+    </md-menu>
+
+    <span flex></span>
+    
+    <md-menu md-position-mode="target-right target">
+      <md-button class="md-icon-button" aria-label="More" ng-click="ctrl.openMenu($mdOpenMenu, $event)">
+        <md-icon aria-label="more_vert">more_vert</md-icon>
+      </md-button>
+      <md-menu-content width="4">
+        <md-menu-item>
+          <md-button>
+            <md-icon>add</md-icon>
+            Add list
+          </md-button>
+        </md-menu-item>
+        <md-menu-item>
+          <md-button>
+            <md-icon>edit</md-icon>
+            Rename list
+          </md-button>
+        </md-menu-item>
+        <md-menu-divider></md-menu-divider>
+        <md-menu-item>
+          <md-button>
+            <md-icon>delete</md-icon>
+            Delete list
+          </md-button>
+        </md-menu-item>
+      </md-menu-content>
+    </md-menu>
+  
+  </div>
+</md-toolbar>

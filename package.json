@@ -1,0 +1,43 @@
+{
+  "name": "owls",
+  "version": "0.0.0",
+  "description": "Offline Web Shopping List",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "beefy src/js/app.js:bundle.js --index=src/index.html --live -- -t browserify-css --debug",
+    "build": "browserify -e src/js/app.js -o build/build.js -t browserify-css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kwirke/owls.git"
+  },
+  "keywords": [
+    "offline",
+    "shopping",
+    "shopping",
+    "list",
+    "shop",
+    "list",
+    "groceries"
+  ],
+  "author": "Kwirke",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kwirke/owls/issues"
+  },
+  "dependencies": {
+    "angular": "^1.5.2",
+    "angular-animate": "^1.5.2",
+    "angular-aria": "^1.5.2",
+    "angular-material": "^1.0.6",
+    "angular-messages": "^1.5.2",
+    "angular-route": "^1.5.2",
+    "browserify": "^13.0.0",
+    "browserify-css": "^0.9.1",
+    "check-browser": "^0.1.7"
+  },
+  "devDependencies": {
+    "beefy": "^2.1.6"
+  }
+}

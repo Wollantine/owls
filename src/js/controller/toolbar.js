@@ -2,6 +2,7 @@
 
 module.exports = function($scope, $mdMenu, $mdDialog, $mdToast){
 	var _ = require('underscore');
+	var angular = require('angular');
 	this.currentList = 'Shopping List';
 	this.lists = ['Shopping List', 'A'];
 
@@ -31,29 +32,43 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast){
 	// Shows a dialog asking to insert the name for the new list
 	this.showPrompt = function($event) {
 		var self = this;
-		var confirm = $mdDialog.prompt()
-			.title('Name the new list')
-			.textContent('Names can not be repeated')
-			.placeholder('List name')
-			.ariaLabel('List name')
-			.targetEvent($event)
-			.ok('Add')
-			.cancel('Cancel');
-		$mdDialog.show(confirm).then(function(result) {
-			if (_.every(self.lists, function(list) {
-				return result.toLowerCase() != list.toLowerCase();
-			})) {
-				self.lists.push(result);
-				self.currentList = result;
-			}
-			else {
-				$mdToast.show(
-					$mdToast.simple()
-						.textContent('This list already exists!')
-						.position('top right')
-				);
-			}
+		var DialogController = require('./new-list-dialog');
+		var confirm = $mdDialog.show({
+			controller: DialogController,
+			templateUrl: 'src/views/new-list-dialog.html',
+			clickOutsideToClose: true,
+			targetEvent: $event,
+			ariaLabel: 'List name',
+			parent: angular.element(document.body)
 		});
+
+		// var confirm = $mdDialog.prompt()
+		// 	.title('Name the new list')
+		// 	.textContent('Names can not be repeated')
+		// 	.placeholder('List name')
+		// 	.ariaLabel('List name')
+		// 	.targetEvent($event)
+		// 	.ok('Add')
+		// 	.cancel('Cancel');
+		console.log(confirm);
+		// $mdDialog.show(confirm).then(function(result) {
+		// 	if (_.every(self.lists, function(list) {
+		// 		return result.toLowerCase() != list.toLowerCase();
+		// 	})) {
+		// 		self.lists.push(result);
+		// 		self.currentList = result;
+		// 	}
+		// 	else {
+		// 		$mdToast.show(
+		// 			$mdToast.simple()
+		// 				.textContent('Name already exists!')
+		// 				.position('top right')
+		// 				.action('RETRY')
+		// 				.highlightAction(true)
+		// 				.highlightClass('md-accent')
+		// 		);
+		// 	}
+		// });
 	};
 
 	// Custom filter to select all array elements that do NOT match the pattern

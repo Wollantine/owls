@@ -1,0 +1,15 @@
+<md-dialog aria-label="New list dialog">
+	<md-dialog-content>
+		<h2 class="md-title">Name the new list</h2>
+		<form name="newList">
+			<md-input-container>
+				<label>List name</label>
+				<input required unique-list name="listName" ng-model="listName"/>
+				<div ng-messages="newList.listName.$error" ng-if="newList.listName.$dirty || newList.listName.$touched">
+					<div ng-message="required">Name cannot be empty</div>
+					<!--div ng-message="unique-list" ng-show="listNameIsUnique()">Name must not exist (caps ignored)</div-->
+				</div>
+			</md-input-container>
+		</form>
+	</md-dialog-content>
+</md-dialog>

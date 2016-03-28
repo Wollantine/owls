@@ -1,5 +1,5 @@
 <md-dialog aria-label="New list dialog">
-	<md-dialog-content>
+	<md-dialog-content class="md-dialog-content">
 		<h2 class="md-title">Name the new list</h2>
 		<form name="newList">
 			<md-input-container>
@@ -12,4 +12,12 @@
 			</md-input-container>
 		</form>
 	</md-dialog-content>
+	<md-dialog-actions layout="row">
+		<md-button ng-click="cancel()">
+			Cancel
+		</md-button>
+		<md-button ng-click="answer(listName)">
+			Add
+		</md-button>
+	</md-dialog-actions>
 </md-dialog>

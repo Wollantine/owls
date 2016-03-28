@@ -3,16 +3,8 @@
 module.exports = function($scope, $mdMenu, $mdDialog, $mdToast){
 	var _ = require('underscore');
 	var angular = require('angular');
-	this.currentList = 'Shopping List';
 	this.lists = ['Shopping List', 'A'];
-
-	// var last = {
-	// 	bottom: false,
-	// 	top: true,
-	// 	left: false,
-	// 	right: true
-	// };
-	// $scope.toastPosition = angular.extend({}, last);
+	this.currentList = this.lists[0];
 
 	var originatorEv;
 	this.openMenu = function($mdOpenMenu, ev) {
@@ -40,17 +32,20 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast){
 			targetEvent: $event,
 			ariaLabel: 'List name',
 			parent: angular.element(document.body)
+		})
+		.then(function(result) {
+			self.lists.push(result);
+			self.currentList = result;
 		});
 
-		// var confirm = $mdDialog.prompt()
-		// 	.title('Name the new list')
-		// 	.textContent('Names can not be repeated')
-		// 	.placeholder('List name')
-		// 	.ariaLabel('List name')
-		// 	.targetEvent($event)
-		// 	.ok('Add')
-		// 	.cancel('Cancel');
-		console.log(confirm);
+		var confirm = $mdDialog.prompt()
+			.title('Name the new list')
+			.textContent('Names can not be repeated')
+			.placeholder('List name')
+			.ariaLabel('List name')
+			.targetEvent($event)
+			.ok('Add')
+			.cancel('Cancel');
 		// $mdDialog.show(confirm).then(function(result) {
 		// 	if (_.every(self.lists, function(list) {
 		// 		return result.toLowerCase() != list.toLowerCase();

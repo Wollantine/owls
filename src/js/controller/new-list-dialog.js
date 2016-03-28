@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function($scope) {
+module.exports = function($scope, $mdDialog) {
 
 	// var app = require('angular').module('owls').directive('uniqueList', function() {
 	// 	return {
@@ -21,6 +21,16 @@ module.exports = function($scope) {
 	// 		}
 	// 	};
 	// });
+
+	$scope.hide = function() {
+	    $mdDialog.hide();
+	};
+	$scope.cancel = function() {
+	    $mdDialog.cancel();
+	};
+	$scope.answer = function(answer) {
+	    $mdDialog.hide(answer);
+	};
 
 	$scope.listName = '';
 	// $scope.listNameIsUnique = function() {

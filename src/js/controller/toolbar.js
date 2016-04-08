@@ -1,10 +1,16 @@
 'use strict';
 
-module.exports = function($scope, $mdMenu, $mdDialog, $mdToast){
+module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 	var _ = require('underscore');
 	var angular = require('angular');
-	this.lists = ['Shopping List', 'A'];
-	this.currentList = this.lists[0];
+	var self = this;
+	console.log(storage);
+
+	// TODO should update the menu once the lists are retrieved
+	storage.getLists(function(lists) {
+		self.lists = lists;
+		self.currentList = self.lists[0];
+	});
 
 	var originatorEv;
 	this.openMenu = function($mdOpenMenu, ev) {

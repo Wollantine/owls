@@ -1,20 +1,12 @@
 'use strict';
 
-require('angular-material');
-require('angular-messages');
-
-var app = require('angular').module('owls', ['ngMaterial', 'ngMessages'])
-	.config(function($mdThemingProvider) {
-		$mdThemingProvider.theme('default')
-			.primaryPalette('purple')
-			.accentPalette('light-green');
-});
+var app = require('angular').module('owls');
 
 app.controller('MainCtrl', function() {
 	this.currentList = 0;
 	// this.onListChange
 
-})
+});
 
 app.controller('ToolbarCtrl', require('./toolbar'));
 

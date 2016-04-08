@@ -2,11 +2,21 @@
 
 var angular = require('angular');
 require('angular-material');
+require('angular-messages');
 
 require('../css/index.css');
-var app = angular.module('owls', ['ngMaterial']);
+
+var app = angular.module('owls', ['ngMaterial', 'ngMessages'])
+	.config(function($mdThemingProvider) {
+		$mdThemingProvider.theme('default')
+			.primaryPalette('purple')
+			.accentPalette('light-green');
+});;
+
+app.service('storage', require('./service/storage'));
 
 require('./controller');
+
 
 	// .controller('ToolbarCtrl', require('./toolbar'));
 	// 	this.currentList = 0;

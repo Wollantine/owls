@@ -36,6 +36,7 @@
     "browserify": "^13.0.0",
     "browserify-css": "^0.9.1",
     "check-browser": "^0.1.7",
+    "localforage": "^1.4.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {

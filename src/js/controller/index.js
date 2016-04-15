@@ -9,6 +9,7 @@ app.controller('MainCtrl', function() {
 });
 
 app.controller('ToolbarCtrl', require('./toolbar'));
+app.controller('ListCtrl', require('./list'));
 
 app.component('toolbar', {
 	controller: 'ToolbarCtrl',
@@ -17,3 +18,8 @@ app.component('toolbar', {
 	// 	onListChange: '&'
 	// }
 });
+
+app.component('itemList', {
+	controller: 'ListCtrl',
+	templateUrl: 'src/views/list.html'
+})

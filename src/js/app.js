@@ -11,9 +11,9 @@ var app = angular.module('owls', ['ngMaterial', 'ngMessages'])
 		$mdThemingProvider.theme('default')
 			.primaryPalette('purple')
 			.accentPalette('light-green');
-});;
+});
 
-app.service('storage', require('./service/storage'));
+require('./service');
 
 require('./controller');
 

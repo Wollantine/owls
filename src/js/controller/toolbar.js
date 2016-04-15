@@ -41,9 +41,7 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 		.then(function(result) {
 			$scope.lists.push(result);
 			$scope.currentList = result;
-			storage.addList(result, function() {
-				// Do nothing
-			});
+			storage.addList(result, angular.noop);
 		});
 
 		// var confirm = $mdDialog.prompt()
@@ -72,6 +70,31 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 		// 		);
 		// 	}
 		// });
+	};
+
+	$scope.deleteList = function(ev, list) {
+		var listToDelete = $scope.currentList;
+		// Delete the list from the app
+		$scope.lists.splice($scope.lists.indexOf(listToDelete), 1);
+		$scope.currentList = $scope.lists[0];
+		// Show toast with UNDO action
+		var toast =	$mdToast.simple()
+			.textContent('List deleted')
+			.position('top right')
+			.action('UNDO')
+			.highlightAction(true)
+			.highlightClass('md-warn');
+		$mdToast.show(toast).then(function(result) {
+			if (result == 'ok') {
+				// Restore the list in the app
+				$scope.lists.push(listToDelete);
+				$scope.currentList = listToDelete;
+			}
+			else {
+				// Remove definitely the list from storage
+				storage.deleteList(listToDelete, angular.noop);
+			}
+		});
 	};
 
 	// Custom filter to select all array elements that do NOT match the pattern

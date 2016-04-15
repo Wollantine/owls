@@ -13,7 +13,7 @@ Sample of the current state of the app:
 
 ## Why web instead of Android?
 
-Because I want. The purpose of developing this app is to improve my web development skills with Node and Angular, the involved workflows and modularization, as well as being forced to use amazing modules to make the app awesome, as angular-material and localForage.
+For personal requirements. The purpose of developing this app is to improve my web development skills with Node and Angular, the involved workflows and modularization, as well as being forced to use amazing modules to make the app awesome, as angular-material and localForage.
 
 Mostly for personal use, I plan on releasing the app in a public domain, however you are free to use it as you please!
 

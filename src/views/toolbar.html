@@ -43,7 +43,7 @@
         </md-menu-item>
         <md-menu-divider></md-menu-divider>
         <md-menu-item>
-          <md-button ng-click="deleteList($event, currentList)">
+          <md-button ng-disabled="lists.length <= 1" ng-click="deleteList($event, currentList)">
             <md-icon>delete</md-icon>
             Delete list
           </md-button>

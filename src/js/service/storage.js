@@ -150,7 +150,8 @@ module.exports = function() {
 		localforage.getItem(LISTS_KEY).then(function(lists) {
 			var index = lists.indexOf(list);
 			// Remove the name from the set of lists
-			var removeListName = localforage.setItem(LISTS_KEY, lists.splice(index, 1));
+			lists.splice(index, 1);
+			var removeListName = localforage.setItem(LISTS_KEY, lists);
 			// Remove the list
 			var removeList = localforage.removeItem(LIST_PREF+list);
 

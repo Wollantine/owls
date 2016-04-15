@@ -81,6 +81,7 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 		var toast =	$mdToast.simple()
 			.textContent('List deleted')
 			.position('top right')
+			.hideDelay(5000)
 			.action('UNDO')
 			.highlightAction(true)
 			.highlightClass('md-warn');

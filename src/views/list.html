@@ -1,1 +1,17 @@
-Hola!
+<section>
+	<md-subheader class="md-primary">Items</md-subheader>
+	<md-list>
+		<md-list-item ng-repeat="item in actualItems">
+			<md-checkbox ng-model="item.done"></md-checkbox>
+			<p>{{item.name}}</p>
+		</md-list-item>
+	</md-list>
+</section>
+<section>
+	<md-subheader>Archive</md-subheader>
+	<md-list>
+		<md-list-item ng-repeat="item in archivedItems">
+			<p>{{item.name}}</p>
+		</md-list-item>
+	</md-list>
+</section>

@@ -1,17 +1,29 @@
-<section>
-	<md-subheader class="md-primary">Items</md-subheader>
-	<md-list>
-		<md-list-item ng-repeat="item in actualItems">
-			<md-checkbox ng-model="item.done"></md-checkbox>
-			<p>{{item.name}}</p>
-		</md-list-item>
-	</md-list>
-</section>
-<section>
-	<md-subheader>Archive</md-subheader>
-	<md-list>
-		<md-list-item ng-repeat="item in archivedItems">
-			<p>{{item.name}}</p>
-		</md-list-item>
-	</md-list>
-</section>
+<md-content style="height: 600px">
+
+    <md-button class="md-fab md-fab-bottom-right md-primary" aria-label="Add item" style="position:fixed">
+      <md-icon>add</md-icon>
+    </md-button>
+
+
+	<section>
+		<md-subheader class="subheader">Items</md-subheader>
+		<md-list class="no-padding">
+			<md-divider ng-repeat-start="item in actualItems"></md-divider>
+			<md-list-item ng-repeat-end>
+				<md-checkbox ng-model="item.done"></md-checkbox>
+				<p>{{item.name}}</p>
+			</md-list-item>
+		</md-list>
+	</section>
+
+	<section>
+		<md-subheader class="subheader">Archive</md-subheader>
+		<md-list class="no-padding">
+			<md-divider ng-repeat-start="item in archivedItems"></md-divider>
+			<md-list-item class="archived" ng-repeat-end>
+				<p>{{item.name}}</p>
+			</md-list-item>
+		</md-list>
+	</section>
+
+	</md-content>

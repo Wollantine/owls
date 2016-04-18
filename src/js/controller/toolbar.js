@@ -5,7 +5,6 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 	var angular = require('angular');
 	$scope.lists = [];
 
-	// TODO should update the menu once the lists are retrieved
 	storage.getLists(function(lists) {
 		$scope.$apply(function() {
 			$scope.lists = lists;
@@ -43,33 +42,6 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 			$scope.currentList = result;
 			storage.addList(result, angular.noop);
 		});
-
-		// var confirm = $mdDialog.prompt()
-		// 	.title('Name the new list')
-		// 	.textContent('Names can not be repeated')
-		// 	.placeholder('List name')
-		// 	.ariaLabel('List name')
-		// 	.targetEvent($event)
-		// 	.ok('Add')
-		// 	.cancel('Cancel');
-		// $mdDialog.show(confirm).then(function(result) {
-		// 	if (_.every(self.lists, function(list) {
-		// 		return result.toLowerCase() != list.toLowerCase();
-		// 	})) {
-		// 		self.lists.push(result);
-		// 		self.currentList = result;
-		// 	}
-		// 	else {
-		// 		$mdToast.show(
-		// 			$mdToast.simple()
-		// 				.textContent('Name already exists!')
-		// 				.position('top right')
-		// 				.action('RETRY')
-		// 				.highlightAction(true)
-		// 				.highlightClass('md-accent')
-		// 		);
-		// 	}
-		// });
 	};
 
 	$scope.deleteList = function(ev, list) {

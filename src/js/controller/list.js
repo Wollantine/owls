@@ -15,6 +15,9 @@ module.exports = function($scope) {
 		{name:'Xocolata', done: false},
 		{name:'Croisanets', done: false},
 		{name:'Fuet', done: true},
+		{name:'Ous', done: false},
+		{name:'Blat de moro', done: true},
+		{name:'Pollastre', done: true},
 		{name:'Galetes', done: false}
 	];
 	$scope.actualItems = [

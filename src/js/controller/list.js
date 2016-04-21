@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function($scope) {
+module.exports = function($scope, $mdDialog) {
 	
 	var angular = require('angular');
 
@@ -35,4 +35,28 @@ module.exports = function($scope) {
 		{name:'Nutella', done: false},
 		{name:'Biscuits', done: false}
 	];
+
+	$scope.addItem = function() {
+		var DialogController = require('./new-list-dialog.js');
+		var confirm = $mdDialog.show({
+			controller: DialogController,
+			templateUrl: 'src/views/new-list-dialog.html',
+			clickOutsideToClose: true,
+			targetEvent: $event,
+			ariaLabel: 'Item name',
+			parent: angular.element(document.body),
+			locals: {
+				title: "Name the new item",
+				label: "Item name",
+				acceptBtn: "Add",
+				initialName: "",
+				uniques: []
+			}
+		})
+		.then(function(result) {
+			$scope.lists.push(result);
+			$scope.currentList = result;
+			storage.addList(result, angular.noop);
+		});
+	}
 };

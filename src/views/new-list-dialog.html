@@ -1,11 +1,11 @@
 <md-dialog aria-label="New list dialog">
 	<md-dialog-content class="md-dialog-content">
-		<h2 class="md-title">Name the new list</h2>
-		<form name="newList">
+		<h2 class="md-title">{{title}}</h2>
+		<form name="newObj">
 			<md-input-container>
-				<label>List name</label>
-				<input required unique-list name="listName" ng-model="listName"/>
-				<div ng-messages="newList.listName.$error" ng-if="newList.listName.$dirty || newList.listName.$touched">
+				<label>{{label}}</label>
+				<input required unique-list name="objName" ng-model="objName"/>
+				<div ng-messages="newObj.objName.$error" ng-if="newObj.objName.$dirty || newObj.objName.$touched">
 					<div ng-message="required">Name cannot be empty</div>
 					<!--div ng-message="unique-list" ng-show="listNameIsUnique()">Name must not exist (caps ignored)</div-->
 				</div>
@@ -16,8 +16,8 @@
 		<md-button ng-click="cancel()">
 			Cancel
 		</md-button>
-		<md-button ng-click="answer(listName)">
-			Add
+		<md-button ng-click="answer(objName)">
+			{{acceptBtn}}
 		</md-button>
 	</md-dialog-actions>
 </md-dialog>

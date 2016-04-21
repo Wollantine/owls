@@ -1,6 +1,20 @@
 'use strict';
 
-module.exports = function($scope, $mdDialog) {
+
+/**
+ *	DialogController
+ *
+ *	Controls a dialog for adding or editing names of objects in lists.
+ *	title, label and acceptBtn configure the dialog's labels.
+ *	uniques is the list of names the object can not have and therefore
+ *	the dialog will complain about the name not being unique.
+ */
+module.exports = function($scope, $mdDialog, title, label, acceptBtn, initialName, uniques) {
+
+	$scope.title = title;
+	$scope.label = label;
+	$scope.acceptBtn = acceptBtn;
+	$scope.objName = initialName;
 
 	// var app = require('angular').module('owls').directive('uniqueList', function() {
 	// 	return {
@@ -32,7 +46,7 @@ module.exports = function($scope, $mdDialog) {
 	    $mdDialog.hide(answer);
 	};
 
-	$scope.listName = '';
+	$scope.lobjName = '';
 	// $scope.listNameIsUnique = function() {
 	// 	return true;
 	// }

@@ -35,7 +35,14 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 			clickOutsideToClose: true,
 			targetEvent: $event,
 			ariaLabel: 'List name',
-			parent: angular.element(document.body)
+			parent: angular.element(document.body),
+			locals: {
+				title: "Name the new list",
+				label: "List name",
+				acceptBtn: "Add",
+				initialName: "",
+				uniques: $scope.lists
+			}
 		})
 		.then(function(result) {
 			$scope.lists.push(result);
@@ -43,6 +50,31 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 			storage.addList(result, angular.noop);
 		});
 	};
+
+	$scope.editList = function($event, list) {
+		var DialogController = require('./new-list-dialog');
+		var confirm = $mdDialog.show({
+			controller: DialogController,
+			templateUrl: 'src/views/new-list-dialog.html',
+			clickOutsideToClose: true,
+			targetEvent: $event,
+			ariaLabel: 'List name',
+			parent: angular.element(document.body),
+			locals: {
+				title: "Rename the list",
+				label: "List name",
+				acceptBtn: "Rename",
+				initialName: list,
+				uniques: $scope.lists
+			}
+		})
+		.then(function(result) {
+			var index = $scope.lists.indexOf(list);
+			$scope.lists[index] = result;
+			$scope.currentList = result;
+			storage.changeListName(list, result, angular.noop);
+		})
+	}
 
 	$scope.deleteList = function(ev, list) {
 		var listToDelete = $scope.currentList;

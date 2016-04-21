@@ -7,7 +7,8 @@
  *	Controls a dialog for adding or editing names of objects in lists.
  *	title, label and acceptBtn configure the dialog's labels.
  *	uniques is the list of names the object can not have and therefore
- *	the dialog will complain about the name not being unique.
+ *	the dialog will complain about the name not being unique. Caps are
+ *	ignored for uniqueness.
  */
 module.exports = function($scope, $mdDialog, title, label, acceptBtn, initialName, uniques) {
 
@@ -46,7 +47,6 @@ module.exports = function($scope, $mdDialog, title, label, acceptBtn, initialNam
 	    $mdDialog.hide(answer);
 	};
 
-	$scope.lobjName = '';
 	// $scope.listNameIsUnique = function() {
 	// 	return true;
 	// }

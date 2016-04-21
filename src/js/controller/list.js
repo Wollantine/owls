@@ -1,10 +1,11 @@
 'use strict';
 
-module.exports = function($scope, $mdDialog) {
+module.exports = function($scope, $mdDialog, $mdToast) {
 	
 	var angular = require('angular');
+	var _ = require('underscore');
 
-	$scope.actualItems = [
+	$scope.items = [
 		{name:'Bread', done: false},
 		{name:'Salmon', done: true},
 		{name:'Salad', done: false},
@@ -36,7 +37,7 @@ module.exports = function($scope, $mdDialog) {
 		{name:'Biscuits', done: false}
 	];
 
-	$scope.addItem = function() {
+	$scope.addItem = function($event) {
 		var DialogController = require('./new-list-dialog.js');
 		var confirm = $mdDialog.show({
 			controller: DialogController,
@@ -54,9 +55,42 @@ module.exports = function($scope, $mdDialog) {
 			}
 		})
 		.then(function(result) {
-			$scope.lists.push(result);
-			$scope.currentList = result;
-			storage.addList(result, angular.noop);
+			var newItem = result.trim();
+			// Find if the item exists
+			var findInLowerCase = function(item) {
+				return item.name.toLowerCase() == newItem.toLowerCase();
+			};
+			var archivePos = _.findIndex($scope.archivedItems, findInLowerCase);
+			var toastText = "Item added";
+			
+			// If item exists and is archived
+			if (archivePos != -1) {
+				// Move the item to pending
+				var item = $scope.archivedItems.splice(archivePos, 1)[0];
+				item.done = false;
+				$scope.items.push(item);
+				toastText = "Item moved from archive";
+			}
+			else {
+				// If it is in the current list
+				var itemPos = _.findIndex($scope.items, findInLowerCase);
+				if (itemPos != -1) {
+					// Tag the item as pending
+					$scope.items[itemPos].done = false;
+					toastText = "Item marked as undone";
+				}
+				// Otherwise add it to pending items
+				else {
+					var item = {name: newItem, done: false};
+					$scope.items.push(item);
+				}
+			}
+			// Show toast
+			var toast = $mdToast.simple()
+				.textContent(toastText)
+				.position('top right')
+				.hideDelay(5000);
+			$mdToast.show(toast);
 		});
-	}
+	};
 };

@@ -1,6 +1,7 @@
 <md-content style="height: 600px">
 
-    <md-button class="md-fab md-fab-bottom-right md-primary" aria-label="Add item" style="position:fixed">
+    <md-button class="md-fab md-fab-bottom-right md-primary" aria-label="Add item" style="position:fixed"
+    	ng-click="addItem($event)">
       <md-icon>add</md-icon>
     </md-button>
 
@@ -8,7 +9,7 @@
 	<section>
 		<md-subheader class="subheader">Items</md-subheader>
 		<md-list class="no-padding">
-			<md-divider ng-repeat-start="item in actualItems"></md-divider>
+			<md-divider ng-repeat-start="item in items"></md-divider>
 			<md-list-item ng-repeat-end>
 				<md-checkbox ng-model="item.done"></md-checkbox>
 				<p>{{item.name}}</p>
@@ -24,6 +25,7 @@
 				<p>{{item.name}}</p>
 			</md-list-item>
 		</md-list>
+		<md-divider>
 	</section>
 
 </md-content>

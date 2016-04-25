@@ -51,7 +51,8 @@ module.exports = function($scope, $mdDialog, $mdToast) {
 				label: "Item name",
 				acceptBtn: "Add",
 				initialName: "",
-				uniques: []
+				uniques: [],
+				autocompleteItems: _.pluck($scope.archivedItems, 'name')
 			}
 		})
 		.then(function(result) {

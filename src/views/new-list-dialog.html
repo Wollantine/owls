@@ -2,14 +2,25 @@
 	<md-dialog-content class="md-dialog-content">
 		<h2 class="md-title">{{title}}</h2>
 		<form name="newObj">
-			<md-input-container>
+			<md-input-container ng-if="!autocomplete">
 				<label>{{label}}</label>
-				<input required unique-list name="objName" ng-model="objName"/>
+				<input required unique-list md-autofocus name="objName" ng-model="objName"/>
 				<div ng-messages="newObj.objName.$error" ng-if="newObj.objName.$dirty || newObj.objName.$touched">
 					<div ng-message="required">Name cannot be empty</div>
 					<!--div ng-message="unique-list" ng-show="listNameIsUnique()">Name must not exist (caps ignored)</div-->
 				</div>
 			</md-input-container>
+			<md-autocomplete 
+					ng-if="autocomplete"
+					md-autofocus
+					md-search-text="searchText"
+					md-search-text-change="updateText(searchText)"
+					md-selected-item-change="updateText(item.display)"
+					md-items="item in querySearch(searchText)"
+					md-item-text="item.display"
+					md-floating-label="{{label}}">
+				<span md-highlight-text="highlightAutocomplete">{{item.display}}</span>
+			</md-autocomplete>
 		</form>
 	</md-dialog-content>
 	<md-dialog-actions layout="row">

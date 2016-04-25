@@ -11,6 +11,7 @@
 		<md-list class="no-padding">
 			<md-divider ng-repeat-start="item in items"></md-divider>
 			<md-list-item ng-repeat-end>
+				<md-icon>drag_handle</md-icon>
 				<md-checkbox ng-model="item.done"></md-checkbox>
 				<p>{{item.name}}</p>
 			</md-list-item>
@@ -22,10 +23,11 @@
 		<md-list class="padding-button">
 			<md-divider ng-repeat-start="item in archivedItems"></md-divider>
 			<md-list-item class="archived" ng-repeat-end>
+				<md-icon>drag_handle</md-icon>
 				<p>{{item.name}}</p>
 			</md-list-item>
+			<md-divider></md-divider>
 		</md-list>
-		<md-divider>
 	</section>
 
 </md-content>

@@ -41,7 +41,8 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 				label: "List name",
 				acceptBtn: "Add",
 				initialName: "",
-				uniques: $scope.lists
+				uniques: $scope.lists,
+				autocompleteItems: []
 			}
 		})
 		.then(function(result) {
@@ -65,7 +66,8 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 				label: "List name",
 				acceptBtn: "Rename",
 				initialName: list,
-				uniques: $scope.lists
+				uniques: $scope.lists,
+				autocompleteItems: []
 			}
 		})
 		.then(function(result) {

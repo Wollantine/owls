@@ -94,4 +94,96 @@ module.exports = function($scope, $mdDialog, $mdToast) {
 			$mdToast.show(toast);
 		});
 	};
+
+	/**
+	 *	Archives an item from the main list and shows a toast with an UNDO action.
+	 *
+	 * @param {int} $index The index of the item that must be retrieved
+	 */
+	$scope.archiveItem = function($index) {
+		// Archive item
+		var item = $scope.items.splice($index, 1)[0];
+		$scope.archivedItems.unshift(item);
+		// Show toast with undo
+		var toast = $mdToast.simple()
+			.textContent('Archived '+item.name)
+			.position('top right')
+			.hideDelay(5000)
+			.action('UNDO')
+			.highlightAction(true)
+			.highlightClass('md-warn');
+		$mdToast.show(toast).then(function(result) {
+			if (result == 'ok') {
+				$scope.archivedItems.shift();
+				$scope.items.splice($index, 0, item);
+			}
+			else {
+				// TODO storage
+				console.log('Archived item '+item.name);
+			}
+		});
+	};
+
+	/**
+	 *	Retrieves an item from the archive back to the main list and shows a toast 
+	 *	with an UNDO action. Also marks the item as undone.
+	 *
+	 * @param {int} $index The index of the item that must be retrieved
+	 */
+	$scope.retrieveItem = function($index) {
+		// Retrieve item and mark it as undone
+		var item = $scope.archivedItems.splice($index, 1)[0];
+		var done = item.done;
+		item.done = false;
+		$scope.items.push(item);
+		// Show toast with undo
+		var toast = $mdToast.simple()
+			.textContent('Retrieved '+item.name)
+			.position('top right')
+			.hideDelay(5000)
+			.action('UNDO')
+			.highlightAction(true)
+			.highlightClass('md-warn');
+		$mdToast.show(toast).then(function(result) {
+			if (result == 'ok') {
+				$scope.items.pop();
+				item.done = done;
+				$scope.archivedItems.splice($index, 0, item);
+			}
+			else {
+				// TODO storage
+				console.log('Retrieved item '+item.name);
+			}
+		});
+	};
+
+	/**
+	 *	Deletes an item from the specified list and shows a toast with an UNDO action.
+	 *
+	 * @param {int} $index The index of the item that must be deleted
+	 * @param {string} listName Either 'archive' or 'items' depending on which list 
+	 *	the item must be deleted from. Defaults to 'items'.
+	 */
+	$scope.deleteItem = function($index, listName) {
+		// Delete item
+		var list = $scope.items;
+		if (listName == 'archive') list = $scope.archivedItems;
+		var item = list.splice($index, 1)[0];
+		// Show toast with undo
+		var toast = $mdToast.simple()
+			.textContent('Deleted '+item.name)
+			.position('top right')
+			.hideDelay(5000)
+			.action('UNDO')
+			.highlightAction(true)
+			.highlightClass('md-warn');
+		$mdToast.show(toast).then(function(result) {
+			if (result == 'ok') {
+				list.splice($index, 0, item);
+			}
+			else {
+				console.log('Deleted item '+item.name);
+			}
+		});
+	};
 };

@@ -66089,7 +66089,7 @@ module.exports = function($scope, $mdDialog, $mdToast) {
 		var DialogController = require('./new-list-dialog.js');
 		var confirm = $mdDialog.show({
 			controller: DialogController,
-			templateUrl: 'src/views/new-list-dialog.html',
+			templateUrl: './views/new-list-dialog.html',
 			clickOutsideToClose: true,
 			targetEvent: $event,
 			ariaLabel: 'Item name',
@@ -66352,7 +66352,7 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 		var DialogController = require('./new-list-dialog');
 		var confirm = $mdDialog.show({
 			controller: DialogController,
-			templateUrl: 'src/views/new-list-dialog.html',
+			templateUrl: './views/new-list-dialog.html',
 			clickOutsideToClose: true,
 			targetEvent: $event,
 			ariaLabel: 'List name',
@@ -66377,7 +66377,7 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 		var DialogController = require('./new-list-dialog');
 		var confirm = $mdDialog.show({
 			controller: DialogController,
-			templateUrl: 'src/views/new-list-dialog.html',
+			templateUrl: './views/new-list-dialog.html',
 			clickOutsideToClose: true,
 			targetEvent: $event,
 			ariaLabel: 'List name',

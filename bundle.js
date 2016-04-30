@@ -66035,7 +66035,7 @@ app.controller('ListCtrl', require('./list'));
 
 app.component('toolbar', {
 	controller: 'ToolbarCtrl',
-	templateUrl: 'src/views/toolbar.html'//,
+	templateUrl: './views/toolbar.html'//,
 	// bindings: {
 	// 	onListChange: '&'
 	// }
@@ -66043,7 +66043,7 @@ app.component('toolbar', {
 
 app.component('itemList', {
 	controller: 'ListCtrl',
-	templateUrl: 'src/views/list.html'
+	templateUrl: './views/list.html'
 })
 },{"./list":18,"./toolbar":20,"angular":10}],18:[function(require,module,exports){
 'use strict';

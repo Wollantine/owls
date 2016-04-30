@@ -1,0 +1,16 @@
+.subheader {
+	font-weight: bold;
+	background-color: #e0e0e0;
+}
+
+.no-padding {
+	padding: 0;
+}
+.padding-button {
+	padding: 0 0 75px 0;
+}
+
+md-list-item.archived {
+	text-align: right;
+	color: darkgrey;
+}

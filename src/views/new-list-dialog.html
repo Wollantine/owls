@@ -4,8 +4,9 @@
 		<form name="newObj">
 			<md-input-container ng-if="!autocomplete">
 				<label>{{label}}</label>
-				<input required unique-list md-autofocus name="objName" ng-model="objName"/>
-				<div ng-messages="newObj.objName.$error" ng-if="newObj.objName.$dirty || newObj.objName.$touched">
+				<input required unique-list md-autofocus name="objNameField" ng-model="ctrl.objName"/>
+				<p>{{ctrl.objName}}</p>
+				<div ng-messages="newObj.objNameField.$error" ng-if="newObj.objNameField.$dirty || newObj.objNameField.$touched">
 					<div ng-message="required">Name cannot be empty</div>
 					<!--div ng-message="unique-list" ng-show="listNameIsUnique()">Name must not exist (caps ignored)</div-->
 				</div>
@@ -13,10 +14,8 @@
 			<md-autocomplete 
 					ng-if="autocomplete"
 					md-autofocus
-					md-search-text="searchText"
-					md-search-text-change="updateText(searchText)"
-					md-selected-item-change="updateText(item.display)"
-					md-items="item in querySearch(searchText)"
+					md-search-text="ctrl.objName"
+					md-items="item in querySearch(ctrl.objName)"
 					md-item-text="item.display"
 					md-floating-label="{{label}}">
 				<span md-highlight-text="highlightAutocomplete">{{item.display}}</span>
@@ -27,7 +26,7 @@
 		<md-button ng-click="cancel()">
 			Cancel
 		</md-button>
-		<md-button ng-click="answer(objName)">
+		<md-button ng-click="answer()">
 			{{acceptBtn}}
 		</md-button>
 	</md-dialog-actions>

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "subl & beefy src/js/app.js:bundle.js --index=src/index.html --live -- -t browserify-css --debug",
+    "dev": "subl & beefy src/js/app.js:bundle.js --index=src/index.html --cwd src --live -- -t browserify-css --debug",
     "build": "browserify -e src/js/app.js -o src/bundle.js -t browserify-css"
   },
   "repository": {

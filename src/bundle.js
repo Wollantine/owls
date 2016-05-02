@@ -66035,7 +66035,7 @@ app.controller('ListCtrl', require('./list'));
 
 app.component('toolbar', {
 	controller: 'ToolbarCtrl',
-	templateUrl: 'src/views/toolbar.html'//,
+	templateUrl: './views/toolbar.html'//,
 	// bindings: {
 	// 	onListChange: '&'
 	// }
@@ -66043,7 +66043,7 @@ app.component('toolbar', {
 
 app.component('itemList', {
 	controller: 'ListCtrl',
-	templateUrl: 'src/views/list.html'
+	templateUrl: './views/list.html'
 })
 },{"./list":18,"./toolbar":20,"angular":10}],18:[function(require,module,exports){
 'use strict';
@@ -66089,7 +66089,7 @@ module.exports = function($scope, $mdDialog, $mdToast) {
 		var DialogController = require('./new-list-dialog.js');
 		var confirm = $mdDialog.show({
 			controller: DialogController,
-			templateUrl: 'src/views/new-list-dialog.html',
+			templateUrl: './views/new-list-dialog.html',
 			clickOutsideToClose: true,
 			targetEvent: $event,
 			ariaLabel: 'Item name',
@@ -66352,7 +66352,7 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 		var DialogController = require('./new-list-dialog');
 		var confirm = $mdDialog.show({
 			controller: DialogController,
-			templateUrl: 'src/views/new-list-dialog.html',
+			templateUrl: './views/new-list-dialog.html',
 			clickOutsideToClose: true,
 			targetEvent: $event,
 			ariaLabel: 'List name',
@@ -66377,7 +66377,7 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 		var DialogController = require('./new-list-dialog');
 		var confirm = $mdDialog.show({
 			controller: DialogController,
-			templateUrl: 'src/views/new-list-dialog.html',
+			templateUrl: './views/new-list-dialog.html',
 			clickOutsideToClose: true,
 			targetEvent: $event,
 			ariaLabel: 'List name',

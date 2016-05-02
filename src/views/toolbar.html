@@ -8,7 +8,7 @@
       </md-button>
       <md-menu-content width="4">
         <md-menu-item ng-repeat="list in lists | filter : currentList : listsFilter">
-          <md-button md-prevent-menu-close="md-prevent-menu-close" ng-click="switchList($event, list)">
+          <md-button aria-label="{{list}}" md-prevent-menu-close="md-prevent-menu-close" ng-click="switchList($event, list)">
             {{list}}
           </md-button>
         </md-menu-item>

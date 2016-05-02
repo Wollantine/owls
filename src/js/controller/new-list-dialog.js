@@ -16,7 +16,9 @@ module.exports = function($scope, $mdDialog, title, label, acceptBtn, initialNam
 	$scope.title = title;
 	$scope.label = label;
 	$scope.acceptBtn = acceptBtn;
-	$scope.objName = initialName;
+
+	this.objName = initialName;
+	var self = this;
 
 	// Autocompleter conf
 	$scope.autocomplete = autocompleteItems.length > 0;
@@ -55,8 +57,8 @@ module.exports = function($scope, $mdDialog, title, label, acceptBtn, initialNam
 	$scope.cancel = function() {
 	    $mdDialog.cancel();
 	};
-	$scope.answer = function(answer) {
-	    $mdDialog.hide(answer);
+	$scope.answer = function() {
+	    $mdDialog.hide(self.objName);
 	};
 
 	// $scope.listNameIsUnique = function() {
@@ -74,9 +76,5 @@ module.exports = function($scope, $mdDialog, title, label, acceptBtn, initialNam
 		}
 		return results;
 	};
-
-	$scope.updateText = function(searchText) {
-		$scope.objName = searchText;
-	}
 
 }

@@ -13,7 +13,7 @@ app.controller('ListCtrl', require('./list'));
 
 app.component('toolbar', {
 	controller: 'ToolbarCtrl',
-	templateUrl: 'src/views/toolbar.html'//,
+	templateUrl: './views/toolbar.html'//,
 	// bindings: {
 	// 	onListChange: '&'
 	// }
@@ -21,5 +21,5 @@ app.component('toolbar', {
 
 app.component('itemList', {
 	controller: 'ListCtrl',
-	templateUrl: 'src/views/list.html'
+	templateUrl: './views/list.html'
 })

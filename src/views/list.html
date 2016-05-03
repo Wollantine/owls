@@ -1,37 +1,33 @@
-<md-content style="height: 600px">
-
-    <md-button class="md-fab md-fab-bottom-right md-primary" aria-label="Add item" style="position:fixed"
-    	ng-click="addItem($event)">
-      <md-icon>add</md-icon>
-    </md-button>
+<md-button class="md-fab md-fab-bottom-right md-primary" aria-label="Add item" style="position:fixed"
+	ng-click="addItem($event)">
+  <md-icon>add</md-icon>
+</md-button>
 
 
-	<section>
-		<md-subheader class="subheader md-no-sticky">Items</md-subheader>
-		<md-list class="no-padding">
-			<md-divider ng-repeat-start="item in items"></md-divider>
-			<md-list-item ng-repeat-end 
-					md-swipe-left="deleteItem($index, 'items')" 
-					md-swipe-right="archiveItem($index)">
-				<md-icon>drag_handle</md-icon>
-				<md-checkbox ng-model="item.done"></md-checkbox>
-				<p>{{item.name}}</p>
-			</md-list-item>
-		</md-list>
-	</section>
+<section>
+	<md-subheader class="subheader md-no-sticky">Items</md-subheader>
+	<md-list class="no-padding">
+		<md-divider ng-repeat-start="item in items"></md-divider>
+		<md-list-item ng-repeat-end 
+				md-swipe-left="deleteItem($index, 'items')" 
+				md-swipe-right="archiveItem($index)">
+			<md-icon>drag_handle</md-icon>
+			<md-checkbox ng-model="item.done"></md-checkbox>
+			<p>{{item.name}}</p>
+		</md-list-item>
+	</md-list>
+</section>
 
-	<section>
-		<md-subheader class="subheader md-no-sticky">Archive</md-subheader>
-		<md-list class="padding-button">
-			<md-divider ng-repeat-start="item in archivedItems"></md-divider>
-			<md-list-item class="archived" ng-repeat-end 
-					md-swipe-left="retrieveItem($index)" 
-					md-swipe-right="deleteItem($index, 'archive')">
-				<md-icon>drag_handle</md-icon>
-				<p>{{item.name}}</p>
-			</md-list-item>
-			<md-divider></md-divider>
-		</md-list>
-	</section>
-
-</md-content>
+<section>
+	<md-subheader class="subheader md-no-sticky">Archive</md-subheader>
+	<md-list class="padding-button">
+		<md-divider ng-repeat-start="item in archivedItems"></md-divider>
+		<md-list-item class="archived" ng-repeat-end 
+				md-swipe-left="retrieveItem($index)" 
+				md-swipe-right="deleteItem($index, 'archive')">
+			<md-icon>drag_handle</md-icon>
+			<p>{{item.name}}</p>
+		</md-list-item>
+		<md-divider></md-divider>
+	</md-list>
+</section>

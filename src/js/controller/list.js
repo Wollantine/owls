@@ -5,6 +5,8 @@ module.exports = function($scope, $mdDialog, $mdToast) {
 	var angular = require('angular');
 	var _ = require('underscore');
 
+	$scope.list = this.list;
+
 	$scope.items = [
 		{name:'Bread', done: false},
 		{name:'Salmon', done: true},

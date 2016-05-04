@@ -5,16 +5,19 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 	var angular = require('angular');
 	$scope.lists = [];
 
+	var self = this;
+
 	storage.getLists(function(lists) {
-		$scope.$apply(function() {
-			$scope.lists = lists;
-			$scope.currentList = $scope.lists[0];
+		storage.getSelectedList(function(currentList) {
+			$scope.$apply(function() {
+				$scope.lists = lists;
+				$scope.currentList = currentList;
+				self.onListChange({list: currentList, updateProducts: true});
+			});
 		});
 	});
 
-	var originatorEv;
 	$scope.openMenu = function($mdOpenMenu, ev) {
-		originatorEv = ev;
 		$mdOpenMenu(ev);
 	};
 
@@ -23,6 +26,8 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 		// Wait for the menu to close before switching current list
 		$mdMenu.hide().then(function() {
 			$scope.currentList = list;
+			self.onListChange({list: list, updateProducts: true});
+			storage.selectList(list, angular.noop);
 		});
 	};
 
@@ -49,7 +54,9 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 		.then(function(result) {
 			$scope.lists.push(result);
 			$scope.currentList = result;
+			self.onListChange({list: result, updateProducts: true});
 			storage.addList(result, angular.noop);
+			storage.selectList(result, angular.noop);
 		});
 	};
 
@@ -76,7 +83,9 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 			var index = $scope.lists.indexOf(list);
 			$scope.lists[index] = result;
 			$scope.currentList = result;
+			self.onListChange({list: result, updateProducts: false});
 			storage.changeListName(list, result, angular.noop);
+			storage.selectList(result, angular.noop);
 		})
 	}
 
@@ -85,6 +94,7 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 		// Delete the list from the app
 		$scope.lists.splice($scope.lists.indexOf(listToDelete), 1);
 		$scope.currentList = $scope.lists[0];
+		self.onListChange({list: $scope, updateProducts: true.lists[0]});
 		// Show toast with UNDO action
 		var toast =	$mdToast.simple()
 			.textContent('List deleted')
@@ -98,10 +108,12 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 				// Restore the list in the app
 				$scope.lists.push(listToDelete);
 				$scope.currentList = listToDelete;
+				self.onListChange({list: listToDelete, updateProducts: true});
 			}
 			else {
 				// Remove definitely the list from storage
 				storage.deleteList(listToDelete, angular.noop);
+				storage.selectList($scope.currentList, angular.noop);
 			}
 		});
 	};
@@ -112,5 +124,4 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 		return actual != expected;
 	};
 
-	originatorEv = null;
 };

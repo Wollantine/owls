@@ -1,5 +1,6 @@
 # OWLS
 *Offline Web Shopping List*. [IN DEVELOPMENT]
+<img src="./src/img/ic_owls_196px.svg.png" alt="Icon" width="100px" height="100px">
 
 OWLS is a full webapp made for learning purposes that will be able to:
 - Store several **lists of items**

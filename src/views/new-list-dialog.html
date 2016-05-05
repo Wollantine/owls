@@ -4,8 +4,7 @@
 		<form name="newObj">
 			<md-input-container ng-if="!autocomplete">
 				<label>{{label}}</label>
-				<input required unique-list md-autofocus name="objNameField" ng-model="ctrl.objName"/>
-				<p>{{ctrl.objName}}</p>
+				<input required unique-list md-autofocus name="objNameField" ng-model="ctrl.objName" autocomplete="off"/>
 				<div ng-messages="newObj.objNameField.$error" ng-if="newObj.objNameField.$dirty || newObj.objNameField.$touched">
 					<div ng-message="required">Name cannot be empty</div>
 					<!--div ng-message="unique-list" ng-show="listNameIsUnique()">Name must not exist (caps ignored)</div-->

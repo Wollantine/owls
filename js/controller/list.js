@@ -1,47 +1,66 @@
 'use strict';
 
-module.exports = function($scope, $mdDialog, $mdToast) {
+module.exports = function($scope, $mdDialog, $mdToast, storage) {
 	
 	var angular = require('angular');
 	var _ = require('underscore');
 
+	var self = this;
+
 	$scope.items = [
-		{name:'Bread', done: false},
-		{name:'Salmon', done: true},
-		{name:'Salad', done: false},
-		{name:'Milk', done: false},
-		{name:'Ham', done: false}
+		// {name:'Bread', done: false},
+		// {name:'Salmon', done: true},
+		// {name:'Salad', done: false},
+		// {name:'Milk', done: false},
+		// {name:'Ham', done: false}
 	];
 	$scope.archivedItems = [
-		{name:'Tuna', done: false},
-		{name:'Tomato', done: false},
-		{name:'Yogurts', done: true},
-		{name:'Beer', done: true},
-		{name:'Pineapple juice', done: false},
-		{name:'Pizza', done: false},
-		{name:'Noodles', done: true},
-		{name:'Eggs', done: false},
-		{name:'Corn', done: true},
-		{name:'Chicken', done: true},
-		{name:'Pasta', done: false},
-		{name:'Cheese', done: false},
-		{name:'Fuet', done: false},
-		{name:'Kitchen tissue', done: false},
-		{name:'Wine', done: false},
-		{name:'Hot dogs', done: false},
-		{name:'Shower gel', done: false},
-		{name:'Shampoo', done: false},
-		{name:'Potatoes', done: false},
-		{name:'Deodorant', done: false},
-		{name:'Nutella', done: false},
-		{name:'Biscuits', done: false}
+		// {name:'Tuna', done: false},
+		// {name:'Tomato', done: false},
+		// {name:'Yogurts', done: true},
+		// {name:'Beer', done: true},
+		// {name:'Pineapple juice', done: false},
+		// {name:'Pizza', done: false},
+		// {name:'Noodles', done: true},
+		// {name:'Eggs', done: false},
+		// {name:'Corn', done: true},
+		// {name:'Chicken', done: true},
+		// {name:'Pasta', done: false},
+		// {name:'Cheese', done: false},
+		// {name:'Fuet', done: false},
+		// {name:'Kitchen tissue', done: false},
+		// {name:'Wine', done: false},
+		// {name:'Hot dogs', done: false},
+		// {name:'Shower gel', done: false},
+		// {name:'Shampoo', done: false},
+		// {name:'Potatoes', done: false},
+		// {name:'Deodorant', done: false},
+		// {name:'Nutella', done: false},
+		// {name:'Biscuits', done: false}
 	];
+
+	// Watch the list, and update the products every time it changes and it is needed
+	$scope.$watch(function() {
+		return self.list.name;
+	}, function() {
+		if (self.list.updateItems) {
+			console.log(self.list.name + "  " + self.list.updateItems)
+			storage.getAllItems(self.list.name, function(list) {
+				$scope.$apply(function() {
+					$scope.items = list.items;
+					$scope.archivedItems = list.archive;
+				});
+			});
+		}
+	});
+
 
 	$scope.addItem = function($event) {
 		var DialogController = require('./new-list-dialog.js');
 		var confirm = $mdDialog.show({
 			controller: DialogController,
-			templateUrl: 'src/views/new-list-dialog.html',
+			controllerAs: "ctrl",
+			templateUrl: './views/new-list-dialog.html',
 			clickOutsideToClose: true,
 			targetEvent: $event,
 			ariaLabel: 'Item name',
@@ -84,6 +103,7 @@ module.exports = function($scope, $mdDialog, $mdToast) {
 				else {
 					var item = {name: newItem, done: false};
 					$scope.items.push(item);
+					storage.addItem(self.list.name, newItem, angular.noop);
 				}
 			}
 			// Show toast
@@ -114,12 +134,13 @@ module.exports = function($scope, $mdDialog, $mdToast) {
 			.highlightClass('md-warn');
 		$mdToast.show(toast).then(function(result) {
 			if (result == 'ok') {
+				// UNDO clicked: Rollback the change
 				$scope.archivedItems.shift();
 				$scope.items.splice($index, 0, item);
 			}
 			else {
-				// TODO storage
-				console.log('Archived item '+item.name);
+				// Store the change
+				storage.archiveItem(self.list.name, item.name, angular.noop);
 			}
 		});
 	};
@@ -146,28 +167,47 @@ module.exports = function($scope, $mdDialog, $mdToast) {
 			.highlightClass('md-warn');
 		$mdToast.show(toast).then(function(result) {
 			if (result == 'ok') {
+				// UNDO clicked: Rollback the change
 				$scope.items.pop();
 				item.done = done;
 				$scope.archivedItems.splice($index, 0, item);
 			}
 			else {
-				// TODO storage
-				console.log('Retrieved item '+item.name);
+				// Store the change
+				storage.retrieveItem(self.list.name, item.name, angular.noop);
 			}
 		});
+	};
+
+	/**
+	 *	Changes an item's status between done and not done.
+	 *
+	 * @param {int} $index The index of the item that must be changed
+	 * @param {boolean} done The item's status before the change
+	 */
+	$scope.changeItemStatus = function($index, done) {
+		// The next status will be the opposite of the one before the click
+		var nextStatus = !done;
+		// Change its status
+		var item = $scope.items[$index];
+		storage.changeItemStatus(self.list.name, item.name, nextStatus, angular.noop);
 	};
 
 	/**
 	 *	Deletes an item from the specified list and shows a toast with an UNDO action.
 	 *
 	 * @param {int} $index The index of the item that must be deleted
-	 * @param {string} listName Either 'archive' or 'items' depending on which list 
+	 * @param {string} sublist Either 'archive' or 'items' depending on which list 
 	 *	the item must be deleted from. Defaults to 'items'.
 	 */
-	$scope.deleteItem = function($index, listName) {
+	$scope.deleteItem = function($index, sublist) {
 		// Delete item
 		var list = $scope.items;
-		if (listName == 'archive') list = $scope.archivedItems;
+		var isArchive = false;
+		if (sublist == 'archive') {
+			isArchive = true;
+			list = $scope.archivedItems;
+		}
 		var item = list.splice($index, 1)[0];
 		// Show toast with undo
 		var toast = $mdToast.simple()
@@ -182,7 +222,7 @@ module.exports = function($scope, $mdDialog, $mdToast) {
 				list.splice($index, 0, item);
 			}
 			else {
-				console.log('Deleted item '+item.name);
+				storage.deleteItem(self.list.name, item.name, isArchive, angular.noop);
 			}
 		});
 	};

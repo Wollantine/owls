@@ -2,66 +2,82 @@
 
 var localforage = require('localforage');
 
-module.exports = function() {
+/**************************************************/
+/*************      STORAGE FACADE      ***********/
+/**************************************************/
+/*
+	This service implements a facade for the 
+	different gateways for each table in the
+	storage database (lists, list and item):
+ _______               ______                ______
+|       |      -lists |      |       -items |      |
+| Lists |<>---------->| List |<>----------->| Item |
+|_______| 1         * |______| 1          * |______|
+                          V                    ^ -archive
+                          |1                  *|
+                          ----------------------
 
-	// Consts: DB's key names and prefixes
-	var LISTS_KEY = 'lists';
-	var LIST_PREF = 'list-';
-	var PROD_PREF = 'prod-';
-	var ACTUAL_KEY = 'actual';
-	var ARCHIVE_KEY = 'archive';
+*/
 
-	// Starting lists
-	var STARTING_LISTS = ['Shopping List'];
+module.exports = function(listsGateway, listGateway, itemGateway) {
+
+	// getLists MUST be the first function called, as it makes sure
+	// the storage has been set up in this device with the initial items.
+	this.init = false;
+	var self = this;
 
 	// Configure the local storage driver
 	localforage.config({
 		name: 'OWLS storage'
 	});
 
-
-	var _error = function(err, callback) {
-		console.log(err);
-		callback(null);
-	};
-
 	/**
 	 * Adds an empty list to the stored ones if the list name does not exist.
 	 * Otherwise it shows an error.
 	 *
-	 * @param {func(mixed)} callback The callback to be called on success
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
 	 * @return true
 	 */
-	var addList = function(listName, callback) {
-		var error = false;
-		localforage.getItem(LISTS_KEY).then(function(lists) {
-			// If list exists show an error
-			if (lists !== null && lists.indexOf(listName) != -1) {
-				error = true;
-				_error("List name already exists", callback);
-			}
-			else {
-				if (lists === null) lists = [];
-				// Add list to set of lists
-				lists.push(listName);
-				var addList = localforage.setItem(LISTS_KEY, lists);
-				
-				// Create and store an empty list
-				var newList = {};
-				newList[ACTUAL_KEY] = [];
-				newList[ARCHIVE_KEY] = [];
-				var createList = localforage.setItem(LIST_PREF+listName, newList);
+	this.addList = function(listName, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listsGateway.addList(listName, callback);
+			});
+		}
+		else listsGateway.addList(listName, callback);
+		return true;
+	};
 
-				// Wait for both operations to finish
-				Promise.all([addList, createList]).then(callback).catch(function(err) {
-					error = true;
-					_error(err, callback);
-				});
-			}
-		}).catch(function(err) {
-			error = true;
-			_error(err, callback);
-		});
+	/**
+	 * Changes the currently selected list to list.
+	 *
+	 * @param {string} list The new list to select.
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
+	this.selectList = function(list, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listsGateway.selectList(list, callback);
+			});
+		}
+		else listsGateway.selectList(list, callback);
+		return true;
+	};
+
+	/**
+	 * Gets the currently selected list.
+	 *
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
+	this.getSelectedList = function(callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listsGateway.getSelectedList(callback);
+			});
+		}
+		else listsGateway.getSelectedList(callback);
 		return true;
 	};
 
@@ -73,28 +89,10 @@ module.exports = function() {
 	 * @param {func(mixed)} callback The callback that will receive the values
 	 * @return true
 	 */
-	var getLists = function(callback) {
-		var error = false;
-		localforage.getItem(LISTS_KEY).then(function(values){
-			// If this is the first use, initialize starting lists
-			if (values === null) {
-				for (var i = STARTING_LISTS.length - 1; i >= 0; i--) {
-					addList(STARTING_LISTS[i], function(result) {
-						if (result === null) error = true;
-					});
-				}
-				callback(STARTING_LISTS);
-			}
-			// Otherwise return existing lists
-			else {
-				callback(values);
-			}
-		}).catch(function(err) {
-			error = true;
-			_error(err, callback);
-		});
-		return true;
+	this.getLists = function(callback) {
+		return listsGateway.getLists(callback);
 	};
+
 
 	/**
 	 * Changes the name of the list if the new name does not exist
@@ -103,76 +101,162 @@ module.exports = function() {
 	 * @param {func(mixed)} callback The callback to be called on success
 	 * @return true
 	 */
-	var changeListName = function(list, newName, callback) {
-		var error = false;
-		localforage.getItem(LISTS_KEY).then(function(lists) {
-			// If list exists show an error
-			if (lists.indexOf(newName) != -1) {
-				error = true;
-				_error("List name already exists", callback);
-			}
-			else {
-				// Change the name in the set of lists
-				lists[lists.indexOf(list)] = newName;
-				var changeListName = localforage.setItem(LISTS_KEY, lists);
-
-				// Change the key of the list to keep consistency
-				localforage.getItem(LIST_PREF+list).then(function(listContents) {
-					var removeList = localforage.removeItem(LIST_PREF+list);
-					var addList = localforage.setItem(LIST_PREF+newName, listContents);
-
-					// Finally wait for all three operations to finish
-					Promise.all([changeListName, removeList, addList]).then(callback).catch(function(err) {
-						error = true;
-						_error(err, callback);
-					});
-				}).catch(function(err) {
-					error = true;
-					_error(err, callback);
-				});
-			}
-		}).catch(function(err) {
-			error = true;
-			_error(err, callback);
-		});
+	this.changeListName = function(list, newName, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listsGateway.changeListName(list, newName, callback);
+			});
+		}
+		else listsGateway.changeListName(list, newName, callback);
 		return true;
 	};
 
 	/**
-	 * Deletes the list and all its products in cascade from the storage.
+	 * Deletes the list and all its items in cascade from the storage.
 	 *
 	 * @param {array} list The name of the list to delete
 	 * @param {func(mixed)} callback The callback to be called on success
 	 * @return true
 	 */
-	var deleteList = function(list, callback) {
-		var error = false;
-		localforage.getItem(LISTS_KEY).then(function(lists) {
-			var index = lists.indexOf(list);
-			// Remove the name from the set of lists
-			lists.splice(index, 1);
-			var removeListName = localforage.setItem(LISTS_KEY, lists);
-			// Remove the list
-			var removeList = localforage.removeItem(LIST_PREF+list);
-
-			// TODO Remove the products
-
-			// Wait for the operations to finish
-			Promise.all([removeListName, removeList]).then(callback).catch(function(err) {
-				error = true;
-				_error(err, callback);
+	this.deleteList = function(list, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listsGateway.deleteList(list, callback);
 			});
-		}).catch(function(err) {
-			error = true;
-			_error(err, callback);
-		});
+		}
+		else listsGateway.deleteList(list, callback);
 		return true;
 	};
 
-	return {
-		addList: addList,
-		getLists: getLists,
-		changeListName: changeListName,
-		deleteList: deleteList
+	/**
+	 * Adds an undone item to the list at the last position of the actual items sublist.
+	 *
+	 * @param {string} list The name of the list in which the item must be added
+	 * @param {string} itemName The name for the new item
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
+	this.addItem = function(list, itemName, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listGateway.addItem(list, itemName, callback);
+			});
+		}
+		else listGateway.addItem(list, itemName, callback);
+
+		return true;
 	};
+
+	/**
+	 * Moves an item to the beginning of the archive list, assuming it existed in the
+	 * actual list.
+	 *
+	 * @param {string} list The name of the list that contains the item
+	 * @param {string} item The name of the item to move
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
+	this.archiveItem = function(list, item, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listGateway.archiveItem(list, item, callback);
+			});
+		}
+		else listGateway.archiveItem(list, item, callback);
+
+		return true;
+	};
+
+	/**
+	 * Moves an item to the end of the actual list, assuming it existed in the
+	 * archive list, and marks it as undone.
+	 *
+	 * @param {string} list The name of the list that contains the item
+	 * @param {string} item The name of the item to move
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
+	this.retrieveItem = function(list, item, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listGateway.retrieveItem(list, item, callback);
+			});
+		}
+		else listGateway.retrieveItem(list, item, callback);
+
+		return true;
+	};
+
+	this.reorderItems = function(list, itemList, isArchive, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listGateway.reorderItems(list, itemList, isArchive, callback);
+			});
+		}
+		else listGateway.reorderItems(list, itemList, isArchive, callback);
+
+		return true;
+	};
+
+	/**
+	 * Gets all items that this list contains. The callback will receive a List object
+	 * as a first parameter.
+	 *
+	 * @param {string} list The name of the list to retrieve
+	 * @param {func(List)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
+	this.getAllItems = function(list, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listGateway.getAllItems(list, callback);
+			});
+		}
+		else listGateway.getAllItems(list, callback);
+
+		return true;
+	};
+
+	/**
+	 * Changes the status of an item between done and not done.
+	 *
+	 * @param {string} item The name of the item to remove
+	 * @param {bool} done The new status for the item
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
+	this.changeItemStatus = function(list, item, done, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = itemGateway.changeItemStatus(list, item, done, callback);
+			});
+		}
+		else itemGateway.changeItemStatus(list, item, done, callback);
+
+		return true;
+	};
+
+	/**
+	 * Deletes an item from a list.
+	 *
+	 * @param {string} list The name of the list that contains the item
+	 * @param {string} item The name of the item to remove
+	 * @param {bool} isArchive Whether the list has the item in its archive sublist or not
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
+	this.deleteItem = function(list, item, isArchive, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listGateway.deleteItem(list, item, isArchive, callback);
+			});
+		}
+		else listGateway.deleteItem(list, item, isArchive, callback);
+
+		return true;
+	};
+
+
+
+	return this;
 };

@@ -1,55 +1,53 @@
-<md-toolbar>
-  <div class="md-toolbar-tools" layout="row">
+<div class="md-toolbar-tools" layout="row">
 
-    <md-menu>
-      <md-button ng-click="openMenu($mdOpenMenu, $event)">
-        {{currentList}}
-        <md-icon>arrow_drop_down</md-icon>
-      </md-button>
-      <md-menu-content width="4">
-        <md-menu-item ng-repeat="list in lists | filter : currentList : listsFilter">
-          <md-button md-prevent-menu-close="md-prevent-menu-close" ng-click="switchList($event, list)">
-            {{list}}
-          </md-button>
-        </md-menu-item>
-        <md-menu-divider></md-menu-divider>
-        <md-menu-item>
-          <md-button ng-click="showPrompt($event)">
-            <md-icon>add</md-icon>
-            Add list
-          </md-button>
-        </md-menu-item>
-      </md-menu-content>
-    </md-menu>
+  <md-menu>
+    <md-button ng-click="openMenu($mdOpenMenu, $event)">
+      {{currentList}}
+      <md-icon>arrow_drop_down</md-icon>
+    </md-button>
+    <md-menu-content width="4">
+      <md-menu-item ng-repeat="list in lists | filter : currentList : listsFilter">
+        <md-button aria-label="{{list}}" md-prevent-menu-close="md-prevent-menu-close" ng-click="switchList($event, list)">
+          {{list}}
+        </md-button>
+      </md-menu-item>
+      <md-menu-divider></md-menu-divider>
+      <md-menu-item>
+        <md-button ng-click="showPrompt($event)">
+          <md-icon>add</md-icon>
+          Add list
+        </md-button>
+      </md-menu-item>
+    </md-menu-content>
+  </md-menu>
 
-    <span flex></span>
-    
-    <md-menu md-position-mode="target-right target">
-      <md-button class="md-icon-button" aria-label="More" ng-click="openMenu($mdOpenMenu, $event)">
-        <md-icon aria-label="more_vert">more_vert</md-icon>
-      </md-button>
-      <md-menu-content width="4">
-        <md-menu-item>
-          <md-button ng-click="showPrompt($event)">
-            <md-icon>add</md-icon>
-            Add list
-          </md-button>
-        </md-menu-item>
-        <md-menu-item>
-          <md-button ng-click="editList($event, currentList)">
-            <md-icon>edit</md-icon>
-            Rename list
-          </md-button>
-        </md-menu-item>
-        <md-menu-divider></md-menu-divider>
-        <md-menu-item>
-          <md-button ng-disabled="lists.length <= 1" ng-click="deleteList($event, currentList)">
-            <md-icon>delete</md-icon>
-            Delete list
-          </md-button>
-        </md-menu-item>
-      </md-menu-content>
-    </md-menu>
+  <span flex></span>
   
-  </div>
-</md-toolbar>
+  <md-menu md-position-mode="target-right target">
+    <md-button class="md-icon-button" aria-label="More" ng-click="openMenu($mdOpenMenu, $event)">
+      <md-icon aria-label="more_vert">more_vert</md-icon>
+    </md-button>
+    <md-menu-content width="4">
+      <md-menu-item>
+        <md-button ng-click="showPrompt($event)">
+          <md-icon>add</md-icon>
+          Add list
+        </md-button>
+      </md-menu-item>
+      <md-menu-item>
+        <md-button ng-click="editList($event, currentList)">
+          <md-icon>edit</md-icon>
+          Rename list
+        </md-button>
+      </md-menu-item>
+      <md-menu-divider></md-menu-divider>
+      <md-menu-item>
+        <md-button ng-disabled="lists.length <= 1" ng-click="deleteList($event, currentList)">
+          <md-icon>delete</md-icon>
+          Delete list
+        </md-button>
+      </md-menu-item>
+    </md-menu-content>
+  </md-menu>
+
+</div>

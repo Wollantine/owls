@@ -5,33 +5,21 @@
   <title>OWLS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="UTF-8">
+  <link rel="icon" href="./img/ic_owls_196px.svg.png">
   <script src="bundle.js" type="text/javascript"></script>
 </head>
 
-<body ng-app="owls" ng-controller="MainCtrl">
-<!-- <div class="content grid-container"> -->
-
-  <!--div ng-view></div-->
-
-<!-- <div layout="column" role="main" flex> -->
-
-  <toolbar></toolbar>
-
-  <item-list></item-list>
+<body ng-app="owls" ng-controller="MainCtrl as ctrl" layout="column">
 
 
-  <!--md-input-container class="md-block" flex-gt-sm>
-    <label>Name:</label>
-    <input type="text" ng-model="yourName">
-  </md-input-container>
-  <hr>
-  <h1>Hello {{yourName}}!</h1-->
+<md-toolbar>
+  <toolbar on-list-change="ctrl.onListChange(list, updateProducts)"></toolbar>
+</md-toolbar>
 
 
-
- <!-- <div flex></div> -->
-
-</div>
+<md-content>
+  <item-list flex list="ctrl.currentList"></item-list>
+</md-content>
 
 
 </body>

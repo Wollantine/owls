@@ -76,12 +76,72 @@ module.exports = function(errorManager, itemGateway) {
 		localforage.getItem(LIST_PREF+list).then(function(listContents) {
 			listContents[ACTUAL_KEY].push(itemName);
 			var addItemToList = localforage.setItem(LIST_PREF+list, listContents);
-			var addItemToStorage = itemGateway.createItem(itemName);
+			var addItemToStorage = itemGateway.createItem(list, itemName);
 
 			// Wait for both operations to finish
 			Promise.all([addItemToList, addItemToStorage]).then(callback).catch(function(err) {
 				self._error(err, callback);
 			});
+		}).catch(function(err) {
+			self._error(err, callback);
+		});
+	};
+
+	/**
+	 * Moves an item to the beginning of the archive list, assuming it existed in the
+	 * actual list.
+	 *
+	 * @param {string} list The name of the list that contains the item
+	 * @param {string} item The name of the item to move
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
+	this.archiveItem = function(list, item, callback) {
+		localforage.getItem(LIST_PREF+list).then(function(listContents) {
+			// Delete the item from the actual list
+			var index = listContents[ACTUAL_KEY].indexOf(item);
+			if (index != -1) {
+				listContents[ACTUAL_KEY].splice(index, 1);
+				// Add it to the beginning of the archive list
+				listContents[ARCHIVE_KEY].unshift(item);
+				// Save the list again
+				localforage.setItem(LIST_PREF+list, listContents).then(callback).catch(function(err) {
+					self._error(err, callback);
+				});
+			}
+			else self._error("List "+list+" doesn't contain any item "+item+".", callback);
+		}).catch(function(err) {
+			self._error(err, callback);
+		});
+	};
+
+	/**
+	 * Moves an item to the end of the actual list, assuming it existed in the
+	 * archive list, and marks it as undone.
+	 *
+	 * @param {string} list The name of the list that contains the item
+	 * @param {string} item The name of the item to move
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
+	this.retrieveItem = function(list, item, callback) {
+		localforage.getItem(LIST_PREF+list).then(function(listContents) {
+			// Delete the item from the archive list
+			var index = listContents[ARCHIVE_KEY].indexOf(item);
+			if (index != -1) {
+				listContents[ARCHIVE_KEY].splice(index, 1);
+				// Add it to the end of the actual list
+				listContents[ACTUAL_KEY].push(item);
+				// Mark the item as not done
+				itemGateway.changeItemStatus(list, item, false, function() {
+					// Save the list again
+					localforage.setItem(LIST_PREF+list, listContents)
+							.then(callback).catch(function(err) {
+						self._error(err, callback);
+					});
+				});
+			}
+			else self._error("List "+list+" doesn't contain any item "+item+".", callback);
 		}).catch(function(err) {
 			self._error(err, callback);
 		});
@@ -109,7 +169,7 @@ module.exports = function(errorManager, itemGateway) {
 			// Retrieve the rest of items
 			var promises = [];
 			for (var i = 0; i < listContents[ACTUAL_KEY].length; i++) {
-				promises.push(itemGateway.getItem(listContents[ACTUAL_KEY][i]));
+				promises.push(itemGateway.getItem(listName, listContents[ACTUAL_KEY][i]));
 			}
 			// Wait for all of them
 			Promise.all(promises).then(function(results) {
@@ -131,6 +191,34 @@ module.exports = function(errorManager, itemGateway) {
 	};
 
 	/**
+	 * Deletes an item from a list.
+	 *
+	 * @param {string} list The name of the list that contains the item
+	 * @param {string} item The name of the item to remove
+	 * @param {bool} isArchive Whether the list has the item in its archive sublist or not
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
+	this.deleteItem = function(listName, item, isArchive, callback) {
+		localforage.getItem(LIST_PREF+listName).then(function(listContents) {
+			// Choose sublist
+			var key = ACTUAL_KEY;
+			if (isArchive) key = ARCHIVE_KEY;
+
+			// Delete the item
+			var index = listContents[key].indexOf(item);
+			listContents[key].splice(index, 1);
+			var listUpdate = localforage.setItem(LIST_PREF+listName, listContents);
+			var itemDeletion = itemGateway.deleteItem(listName, item);
+
+			// Wait for both operations
+			Promise.all([listUpdate, itemDeletion]).then(callback).catch(function(err) {
+				self._error(err, callback);
+			});
+		});
+	}
+
+	/**
 	 * Deletes the list and all its items in cascade from the storage.
 	 *
 	 * @param {string} listName The name of the list to delete
@@ -147,7 +235,7 @@ module.exports = function(errorManager, itemGateway) {
 
 			// Delete all the items in the list
 			for (var i = 0; i < items.length; i++) {
-				promises.push(itemGateway.deleteItem(items[i]));
+				promises.push(itemGateway.deleteItem(listName, items[i]));
 			}
 
 			// Wait for all the operations to finish

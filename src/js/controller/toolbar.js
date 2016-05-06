@@ -7,11 +7,13 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 
 	var self = this;
 
+	// Initialize the app looking for the list of lists and the currently selected list
 	storage.getLists(function(lists) {
 		storage.getSelectedList(function(currentList) {
 			$scope.$apply(function() {
 				$scope.lists = lists;
 				$scope.currentList = currentList;
+				// The parent controller will propagate this change in order to show the list's products
 				self.onListChange({list: currentList, updateProducts: true});
 			});
 		});
@@ -56,7 +58,9 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 			$scope.currentList = result;
 			// Make sure the list of items is updated AFTER the list has been created
 			storage.addList(result, function() {
-				self.onListChange({list: result, updateProducts: true});
+				$scope.$apply(function() {
+					self.onListChange({list: result, updateProducts: true});
+				});
 			});
 			storage.selectList(result, angular.noop);
 		});

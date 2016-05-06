@@ -12,7 +12,7 @@
 				md-swipe-left="deleteItem($index, 'items')" 
 				md-swipe-right="archiveItem($index)">
 			<md-icon>drag_handle</md-icon>
-			<md-checkbox ng-model="item.done"></md-checkbox>
+			<md-checkbox ng-model="item.done" ng-click="changeItemStatus($index, item.done)"></md-checkbox>
 			<p>{{item.name}}</p>
 		</md-list-item>
 	</md-list>

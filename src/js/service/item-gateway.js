@@ -26,8 +26,10 @@ module.exports = function(errorManager) {
 	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
 	 * @return {Promise} If callback not specified. True otherwise.
 	 */
-	this.createItem = function(name, callback) {
-		var promise = localforage.setItem(ITEM_PREF+name, NEW_ITEM)
+	this.createItem = function(list, name, callback) {
+		// Item is stored with its list's name to allow items in different lists to have the same name
+		var prefix = ITEM_PREF+list+"-";
+		var promise = localforage.setItem(prefix+name, NEW_ITEM)
 		if (typeof callback != 'function') return promise;
 		else {
 			promise.then(callback).catch(function(err) {
@@ -46,8 +48,9 @@ module.exports = function(errorManager) {
 	 *	 on completion. Will receive null on error
 	 * @return {Promise} If callback not specified. True otherwise.
 	 */
-	this.getItem = function(name, callback) {
-		var promise = localforage.getItem(ITEM_PREF+name).then(function(result) {
+	this.getItem = function(list, name, callback) {
+		var prefix = ITEM_PREF+list+"-";
+		var promise = localforage.getItem(prefix+name).then(function(result) {
 			var item = new Item(name, result[DONE_KEY]);
 			return item;
 		});
@@ -71,10 +74,11 @@ module.exports = function(errorManager) {
 	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
 	 * @return true
 	 */
-	this.changeItemStatus = function(name, done, callback) {
-		localforage.getItem(ITEM_PREF+name).then(function(item) {
+	this.changeItemStatus = function(list, name, done, callback) {
+		var prefix = ITEM_PREF+list+"-";
+		localforage.getItem(prefix+name).then(function(item) {
 			item[DONE_KEY] = done;
-			localforage.setItem(ITEM_PREF+name, item).then(callback).catch(function(err) {
+			localforage.setItem(prefix+name, item).then(callback).catch(function(err) {
 				self._error(err, callback);
 			});
 		});
@@ -90,8 +94,9 @@ module.exports = function(errorManager) {
 	 *	 on completion. Will receive null on error
 	 * @return {Promise} If callback not specified. True otherwise.
 	 */
-	this.deleteItem = function(item, callback) {
-		var promise = localforage.removeItem(ITEM_PREF+item);
+	this.deleteItem = function(list, item, callback) {
+		var prefix = ITEM_PREF+list+"-";
+		var promise = localforage.removeItem(prefix+item);
 		if (typeof callback != 'function') return promise;
 		else {
 			promise.then(callback).catch(function(err) {

@@ -143,10 +143,19 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 			});
 		}
 		else listGateway.addItem(list, itemName, callback);
-		
+
 		return true;
 	};
 
+	/**
+	 * Moves an item to the beginning of the archive list, assuming it existed in the
+	 * actual list.
+	 *
+	 * @param {string} list The name of the list that contains the item
+	 * @param {string} item The name of the item to move
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
 	this.archiveItem = function(list, item, callback) {
 		if (!this.init) {
 			this.getLists(function() {
@@ -154,10 +163,19 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 			});
 		}
 		else listGateway.archiveItem(list, item, callback);
-		
+
 		return true;
 	};
 
+	/**
+	 * Moves an item to the end of the actual list, assuming it existed in the
+	 * archive list, and marks it as undone.
+	 *
+	 * @param {string} list The name of the list that contains the item
+	 * @param {string} item The name of the item to move
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
 	this.retrieveItem = function(list, item, callback) {
 		if (!this.init) {
 			this.getLists(function() {
@@ -165,7 +183,7 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 			});
 		}
 		else listGateway.retrieveItem(list, item, callback);
-		
+
 		return true;
 	};
 
@@ -176,7 +194,7 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 			});
 		}
 		else listGateway.reorderItems(list, itemList, isArchive, callback);
-		
+
 		return true;
 	};
 
@@ -195,7 +213,7 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 			});
 		}
 		else listGateway.getAllItems(list, callback);
-		
+
 		return true;
 	};
 
@@ -207,17 +225,26 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
 	 * @return true
 	 */
-	this.changeItemStatus = function(item, done, callback) {
+	this.changeItemStatus = function(list, item, done, callback) {
 		if (!this.init) {
 			this.getLists(function() {
-				self.init = itemGateway.changeItemStatus(item, done, callback);
+				self.init = itemGateway.changeItemStatus(list, item, done, callback);
 			});
 		}
-		else itemGateway.changeItemStatus(item, done, callback);
-		
+		else itemGateway.changeItemStatus(list, item, done, callback);
+
 		return true;
 	};
 
+	/**
+	 * Deletes an item from a list.
+	 *
+	 * @param {string} list The name of the list that contains the item
+	 * @param {string} item The name of the item to remove
+	 * @param {bool} isArchive Whether the list has the item in its archive sublist or not
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
 	this.deleteItem = function(list, item, isArchive, callback) {
 		if (!this.init) {
 			this.getLists(function() {
@@ -225,7 +252,7 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 			});
 		}
 		else listGateway.deleteItem(list, item, isArchive, callback);
-		
+
 		return true;
 	};
 

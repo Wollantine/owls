@@ -1,43 +1,57 @@
 'use strict';
 
-module.exports = function($scope, $mdDialog, $mdToast) {
+module.exports = function($scope, $mdDialog, $mdToast, storage) {
 	
 	var angular = require('angular');
 	var _ = require('underscore');
 
-	$scope.list = this.list;
+	var self = this;
 
 	$scope.items = [
-		{name:'Bread', done: false},
-		{name:'Salmon', done: true},
-		{name:'Salad', done: false},
-		{name:'Milk', done: false},
-		{name:'Ham', done: false}
+		// {name:'Bread', done: false},
+		// {name:'Salmon', done: true},
+		// {name:'Salad', done: false},
+		// {name:'Milk', done: false},
+		// {name:'Ham', done: false}
 	];
 	$scope.archivedItems = [
-		{name:'Tuna', done: false},
-		{name:'Tomato', done: false},
-		{name:'Yogurts', done: true},
-		{name:'Beer', done: true},
-		{name:'Pineapple juice', done: false},
-		{name:'Pizza', done: false},
-		{name:'Noodles', done: true},
-		{name:'Eggs', done: false},
-		{name:'Corn', done: true},
-		{name:'Chicken', done: true},
-		{name:'Pasta', done: false},
-		{name:'Cheese', done: false},
-		{name:'Fuet', done: false},
-		{name:'Kitchen tissue', done: false},
-		{name:'Wine', done: false},
-		{name:'Hot dogs', done: false},
-		{name:'Shower gel', done: false},
-		{name:'Shampoo', done: false},
-		{name:'Potatoes', done: false},
-		{name:'Deodorant', done: false},
-		{name:'Nutella', done: false},
-		{name:'Biscuits', done: false}
+		// {name:'Tuna', done: false},
+		// {name:'Tomato', done: false},
+		// {name:'Yogurts', done: true},
+		// {name:'Beer', done: true},
+		// {name:'Pineapple juice', done: false},
+		// {name:'Pizza', done: false},
+		// {name:'Noodles', done: true},
+		// {name:'Eggs', done: false},
+		// {name:'Corn', done: true},
+		// {name:'Chicken', done: true},
+		// {name:'Pasta', done: false},
+		// {name:'Cheese', done: false},
+		// {name:'Fuet', done: false},
+		// {name:'Kitchen tissue', done: false},
+		// {name:'Wine', done: false},
+		// {name:'Hot dogs', done: false},
+		// {name:'Shower gel', done: false},
+		// {name:'Shampoo', done: false},
+		// {name:'Potatoes', done: false},
+		// {name:'Deodorant', done: false},
+		// {name:'Nutella', done: false},
+		// {name:'Biscuits', done: false}
 	];
+
+	// Watch the list, and update the products every time it changes and it is needed
+	$scope.$watch(function() {
+		return self.list.name;
+	}, function() {
+		if (self.list.updateItems) {
+			console.log(self.list.name + "  " + self.list.updateItems)
+			storage.getAllItems(self.list.name, function(list) {
+				$scope.items = list.items;
+				$scope.archivedItems = list.archive;
+			});
+		}
+	});
+
 
 	$scope.addItem = function($event) {
 		var DialogController = require('./new-list-dialog.js');
@@ -87,6 +101,7 @@ module.exports = function($scope, $mdDialog, $mdToast) {
 				else {
 					var item = {name: newItem, done: false};
 					$scope.items.push(item);
+					storage.addItem($scope.list.name, newItem, angular.noop);
 				}
 			}
 			// Show toast

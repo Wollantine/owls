@@ -128,6 +128,14 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 		return true;
 	};
 
+	/**
+	 * Adds an undone item to the list at the last position of the actual items sublist.
+	 *
+	 * @param {string} list The name of the list in which the item must be added
+	 * @param {string} itemName The name for the new item
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
 	this.addItem = function(list, itemName, callback) {
 		if (!this.init) {
 			this.getLists(function() {
@@ -135,6 +143,8 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 			});
 		}
 		else listGateway.addItem(list, itemName, callback);
+		
+		return true;
 	};
 
 	this.archiveItem = function(list, item, callback) {
@@ -144,6 +154,8 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 			});
 		}
 		else listGateway.archiveItem(list, item, callback);
+		
+		return true;
 	};
 
 	this.retrieveItem = function(list, item, callback) {
@@ -153,6 +165,8 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 			});
 		}
 		else listGateway.retrieveItem(list, item, callback);
+		
+		return true;
 	};
 
 	this.reorderItems = function(list, itemList, isArchive, callback) {
@@ -162,8 +176,18 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 			});
 		}
 		else listGateway.reorderItems(list, itemList, isArchive, callback);
+		
+		return true;
 	};
 
+	/**
+	 * Gets all items that this list contains. The callback will receive a List object
+	 * as a first parameter.
+	 *
+	 * @param {string} list The name of the list to retrieve
+	 * @param {func(List)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
 	this.getAllItems = function(list, callback) {
 		if (!this.init) {
 			this.getLists(function() {
@@ -171,6 +195,8 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 			});
 		}
 		else listGateway.getAllItems(list, callback);
+		
+		return true;
 	};
 
 	/**
@@ -188,6 +214,8 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 			});
 		}
 		else itemGateway.changeItemStatus(item, done, callback);
+		
+		return true;
 	};
 
 	this.deleteItem = function(list, item, isArchive, callback) {
@@ -197,6 +225,8 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 			});
 		}
 		else listGateway.deleteItem(list, item, isArchive, callback);
+		
+		return true;
 	};
 
 

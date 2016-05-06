@@ -5,14 +5,12 @@ var app = require('angular').module('owls');
 app.controller('MainCtrl', function(storage) {
 	var self = this;
 
-	this.currentList = '';
-	this.list = ["hola", "adeu"];
-	this.updateProducts = true;
+	this.currentList = {name: 'Shopping List', updateItems: false};
 
-	this.onListChange = function(list, updateProducts) {
-		self.currentList = list;
-		self.list.push(list);
-		console.log(self.currentList+"  "+self.updateProducts);
+	this.onListChange = function(list, updateItems) {
+		self.currentList.name = list;
+		self.currentList.updateItems = updateItems;
+		console.log(self.currentList.name+"  "+self.currentList.updateItems);
 	}
 
 });

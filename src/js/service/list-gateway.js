@@ -2,6 +2,7 @@
 
 var localforage = require('localforage');
 var _ = require('underscore');
+var List = require('../dto/List');
 
 /**                 LIST GATEWAY                 **/
 module.exports = function(errorManager, itemGateway) {
@@ -60,16 +61,48 @@ module.exports = function(errorManager, itemGateway) {
 		});
 
 		return true;
-	}
+	};
 
+	/**
+	 * Adds an undone item to the list at the last position of the actual items sublist.
+	 *
+	 * @param {string} list The name of the list in which the item must be added
+	 * @param {string} itemName The name for the new item
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
 	this.addItem = function(list, itemName, callback) {
-		localforage.getItem(LIST_PREF+list)
-	}
+		localforage.getItem(LIST_PREF+list).then(function(listContents) {
+			listContents[ACTUAL_KEY].push(itemName);
+			var addItemToList = localforage.setItem(LIST_PREF+list, listContents);
+			var addItemToStorage = itemGateway.createItem(itemName);
+
+			// Wait for both operations to finish
+			Promise.all([addItemToList, addItemToStorage]).then(callback).catch(function(err) {
+				self._error(err, callback);
+			});
+		}).catch(function(err) {
+			self._error(err, callback);
+		});
+	};
+
+	/**
+	 * Gets all items that this list contains. The callback will receive a List object
+	 * as a first parameter.
+	 *
+	 * @param {string} list The name of the list to retrieve
+	 * @param {func(List)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
+	this.getAllItems = function(listName, callback) {
+		var list = new List(listName, [{name: listName, done: true}], []);
+		callback(list);
+	};
 
 	/**
 	 * Deletes the list and all its items in cascade from the storage.
 	 *
-	 * @param {array} listName The name of the list to delete
+	 * @param {string} listName The name of the list to delete
 	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
 	 * @return true
 	 */
@@ -92,7 +125,7 @@ module.exports = function(errorManager, itemGateway) {
 			});
 		});
 		return true;
-	}
+	};
 
 
 

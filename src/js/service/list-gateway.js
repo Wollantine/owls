@@ -10,7 +10,7 @@ module.exports = function(errorManager, itemGateway) {
 	var LIST_PREF = 'list-';
 	var ACTUAL_KEY = 'actual';
 	var ARCHIVE_KEY = 'archive';
-	var NEW_LIST = { actual: [], archive: [] };
+	var NEW_LIST = { actual: [], archive: [] }; // These keys should match the other consts
 
 	var self = this;
 
@@ -38,6 +38,61 @@ module.exports = function(errorManager, itemGateway) {
 
 		return true;
 	};
+
+	/**
+	 * Changes the name of the list if the new name does not exist
+	 * Otherwise it shows an error.
+	 *
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
+	this.changeListName = function(list, newName, callback) {
+		localforage.getItem(LIST_PREF+list).then(function(listContents) {
+			var removeList = localforage.removeItem(LIST_PREF+list);
+			var addList = localforage.setItem(LIST_PREF+newName, listContents);
+
+			// Wait for both operations to finish
+			var promise = Promise.all([removeList, addList]).then(callback).catch(function(err) {
+				self._error(err, callback);
+			});
+		}).catch(function(err) {
+			self._error(err, callback);
+		});
+
+		return true;
+	}
+
+	this.addItem = function(list, itemName, callback) {
+		localforage.getItem(LIST_PREF+list)
+	}
+
+	/**
+	 * Deletes the list and all its items in cascade from the storage.
+	 *
+	 * @param {array} listName The name of the list to delete
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
+	this.deleteList = function(listName, callback) {
+		localforage.getItem(LIST_PREF+listName).then(function(list) {
+			var items = _.union(list[ACTUAL_KEY], list[ARCHIVE_KEY]);
+			var promises = [];
+
+			// Remove the list
+			promises.push(localforage.removeItem(LIST_PREF+listName));
+
+			// Delete all the items in the list
+			for (var i = items.length - 1; i >= 0; i--) {
+				promises.push(itemGateway.deleteItem(items[i]));
+			}
+
+			// Wait for all the operations to finish
+			Promise.all(promises).then(callback).catch(function(err) {
+				self._error(err, callback);
+			});
+		});
+		return true;
+	}
 
 
 

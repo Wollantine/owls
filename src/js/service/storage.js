@@ -128,6 +128,78 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 		return true;
 	};
 
+	this.addItem = function(list, itemName, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listGateway.addItem(list, itemName, callback);
+			});
+		}
+		else listGateway.addItem(list, itemName, callback);
+	};
+
+	this.archiveItem = function(list, item, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listGateway.archiveItem(list, item, callback);
+			});
+		}
+		else listGateway.archiveItem(list, item, callback);
+	};
+
+	this.retrieveItem = function(list, item, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listGateway.retrieveItem(list, item, callback);
+			});
+		}
+		else listGateway.retrieveItem(list, item, callback);
+	};
+
+	this.reorderItems = function(list, itemList, isArchive, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listGateway.reorderItems(list, itemList, isArchive, callback);
+			});
+		}
+		else listGateway.reorderItems(list, itemList, isArchive, callback);
+	};
+
+	this.getAllItems = function(list, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listGateway.getAllItems(list, callback);
+			});
+		}
+		else listGateway.getAllItems(list, callback);
+	};
+
+	/**
+	 * Changes the status of an item between done and not done.
+	 *
+	 * @param {string} item The name of the item to remove
+	 * @param {bool} done The new status for the item
+	 * @param {func(mixed)} callback The callback to be called. Will receive null on error
+	 * @return true
+	 */
+	this.changeItemStatus = function(item, done, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = itemGateway.changeItemStatus(item, done, callback);
+			});
+		}
+		else itemGateway.changeItemStatus(item, done, callback);
+	};
+
+	this.deleteItem = function(list, item, isArchive, callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listGateway.deleteItem(list, item, isArchive, callback);
+			});
+		}
+		else listGateway.deleteItem(list, item, isArchive, callback);
+	};
+
+
 
 	return this;
 };

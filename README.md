@@ -3,10 +3,10 @@
 *Offline Web Shopping List*. [IN DEVELOPMENT]
 
 OWLS is a full webapp made for learning purposes that will be able to:
-- Store several **lists of items**
-- Mark every item as **done** or not done
-- **Archive** an item to the back of the list for later easy retrieval
-- Keep on working while you are out of connection, as in my supermarket, because it **stores all the data in your device**
+- Store several **lists of items**.
+- Mark every item as **done** or not done.
+- **Archive** an item to the back of the list for later easy retrieval.
+- Keep on working while you are out of connection, as in my supermarket, because it **stores all the data in your device**.
 - Help you do all that superfast: **Swipe** those items off to the archive!
 
 Sample of the current state of the app:

@@ -94,7 +94,7 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 		// Delete the list from the app
 		$scope.lists.splice($scope.lists.indexOf(listToDelete), 1);
 		$scope.currentList = $scope.lists[0];
-		self.onListChange({list: $scope, updateProducts: true.lists[0]});
+		self.onListChange({list: $scope.lists[0], updateProducts: true});
 		// Show toast with UNDO action
 		var toast =	$mdToast.simple()
 			.textContent('List deleted')

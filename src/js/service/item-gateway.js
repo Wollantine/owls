@@ -8,7 +8,8 @@ module.exports = function(errorManager) {
 
 	// Consts: DB's key names and prefixes
 	var ITEM_PREF = 'item-';
-	var NEW_ITEM = {done: false};
+	var DONE_KEY = 'done';
+	var NEW_ITEM = {done: false}; // These keys should match the other consts
 
 	var self = this;
 
@@ -48,7 +49,10 @@ module.exports = function(errorManager) {
 		var promise = localforage.getItem(ITEM_PREF+name);
 		if (typeof callback != 'function') return promise;
 		else {
-			promise.then(callback).catch(function(err) {
+			promise.then(function(result) {
+				var item = {name: name, done: result[DONE_KEY]};
+				callback(item);
+			}).catch(function(err) {
 				self._error(err, callback);
 			});
 		}
@@ -66,7 +70,7 @@ module.exports = function(errorManager) {
 	 */
 	this.changeItemStatus = function(name, done, callback) {
 		localforage.getItem(ITEM_PREF+name).then(function(item) {
-			item.done = done;
+			item[DONE_KEY] = done;
 			localforage.setItem(ITEM_PREF+name, item).then(callback).catch(function(err) {
 				self._error(err, callback);
 			});

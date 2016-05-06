@@ -9,9 +9,6 @@ module.exports = function(errorManager, listGateway) {
 	// Consts: DB's key names and prefixes
 	var SELECTED_LIST = "selected-list";
 	var LISTS_KEY = 'lists';
-	var LIST_PREF = 'list-';
-	var ACTUAL_KEY = 'actual';
-	var ARCHIVE_KEY = 'archive';
 
 	// Starting lists
 	var STARTING_LISTS = ['Shopping List'];
@@ -145,18 +142,10 @@ module.exports = function(errorManager, listGateway) {
 				var changeListName = localforage.setItem(LISTS_KEY, lists);
 
 				// Change the key of the list to keep consistency
-				localforage.getItem(LIST_PREF+list).then(function(listContents) {
-					var removeList = localforage.removeItem(LIST_PREF+list);
-					var addList = localforage.setItem(LIST_PREF+newName, listContents);
-
-					// Finally wait for all three operations to finish
-					Promise.all([changeListName, removeList, addList]).then(callback).catch(function(err) {
-						error = true;
+				listGateway.changeListName(list, newName, function(res) {
+					changeListName.then(callback).catch(function(err) {
 						self._error(err, callback);
 					});
-				}).catch(function(err) {
-					error = true;
-					self._error(err, callback);
 				});
 			}
 		}).catch(function(err) {
@@ -181,14 +170,11 @@ module.exports = function(errorManager, listGateway) {
 			lists.splice(index, 1);
 			var removeListName = localforage.setItem(LISTS_KEY, lists);
 			// Remove the list
-			var removeList = localforage.removeItem(LIST_PREF+list);
-
-			// TODO Remove the items
-
-			// Wait for the operations to finish
-			Promise.all([removeListName, removeList]).then(callback).catch(function(err) {
-				error = true;
-				self._error(err, callback);
+			listGateway.deleteList(list, function() {
+				removeListName.then(callback).catch(function(err) {
+					error = true;
+					self._error(err, callback);
+				});
 			});
 		}).catch(function(err) {
 			error = true;

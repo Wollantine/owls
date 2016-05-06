@@ -7,37 +7,8 @@ module.exports = function($scope, $mdDialog, $mdToast, storage) {
 
 	var self = this;
 
-	$scope.items = [
-		// {name:'Bread', done: false},
-		// {name:'Salmon', done: true},
-		// {name:'Salad', done: false},
-		// {name:'Milk', done: false},
-		// {name:'Ham', done: false}
-	];
-	$scope.archivedItems = [
-		// {name:'Tuna', done: false},
-		// {name:'Tomato', done: false},
-		// {name:'Yogurts', done: true},
-		// {name:'Beer', done: true},
-		// {name:'Pineapple juice', done: false},
-		// {name:'Pizza', done: false},
-		// {name:'Noodles', done: true},
-		// {name:'Eggs', done: false},
-		// {name:'Corn', done: true},
-		// {name:'Chicken', done: true},
-		// {name:'Pasta', done: false},
-		// {name:'Cheese', done: false},
-		// {name:'Fuet', done: false},
-		// {name:'Kitchen tissue', done: false},
-		// {name:'Wine', done: false},
-		// {name:'Hot dogs', done: false},
-		// {name:'Shower gel', done: false},
-		// {name:'Shampoo', done: false},
-		// {name:'Potatoes', done: false},
-		// {name:'Deodorant', done: false},
-		// {name:'Nutella', done: false},
-		// {name:'Biscuits', done: false}
-	];
+	$scope.items = [];
+	$scope.archivedItems = [];
 
 	// Watch the list, and update the products every time it changes and it is needed
 	$scope.$watch(function() {
@@ -125,6 +96,7 @@ module.exports = function($scope, $mdDialog, $mdToast, storage) {
 		var item = $scope.items.splice($index, 1)[0];
 		$scope.archivedItems.unshift(item);
 		// Show toast with undo
+		var listName = self.list.name; // Keep it in case the user changes list
 		var toast = $mdToast.simple()
 			.textContent('Archived '+item.name)
 			.position('top right')
@@ -140,7 +112,7 @@ module.exports = function($scope, $mdDialog, $mdToast, storage) {
 			}
 			else {
 				// Store the change
-				storage.archiveItem(self.list.name, item.name, angular.noop);
+				storage.archiveItem(listName, item.name, angular.noop);
 			}
 		});
 	};
@@ -158,6 +130,7 @@ module.exports = function($scope, $mdDialog, $mdToast, storage) {
 		item.done = false;
 		$scope.items.push(item);
 		// Show toast with undo
+		var listName = self.list.name; // Keep it in case the user changes list
 		var toast = $mdToast.simple()
 			.textContent('Retrieved '+item.name)
 			.position('top right')
@@ -174,7 +147,7 @@ module.exports = function($scope, $mdDialog, $mdToast, storage) {
 			}
 			else {
 				// Store the change
-				storage.retrieveItem(self.list.name, item.name, angular.noop);
+				storage.retrieveItem(listName, item.name, angular.noop);
 			}
 		});
 	};
@@ -210,6 +183,7 @@ module.exports = function($scope, $mdDialog, $mdToast, storage) {
 		}
 		var item = list.splice($index, 1)[0];
 		// Show toast with undo
+		var listName = self.list.name; // Keep it in case the user changes list
 		var toast = $mdToast.simple()
 			.textContent('Deleted '+item.name)
 			.position('top right')
@@ -222,8 +196,10 @@ module.exports = function($scope, $mdDialog, $mdToast, storage) {
 				list.splice($index, 0, item);
 			}
 			else {
-				storage.deleteItem(self.list.name, item.name, isArchive, angular.noop);
+				storage.deleteItem(listName, item.name, isArchive, angular.noop);
 			}
 		});
 	};
+
+	
 };

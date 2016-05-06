@@ -2,6 +2,7 @@
 
 var localforage = require('localforage');
 var _ = require('underscore');
+var Item = require('../dto/Item');
 
 /**                 ITEM GATEWAY                 **/
 module.exports = function(errorManager) {
@@ -41,16 +42,18 @@ module.exports = function(errorManager) {
 	 * Gets an item's contents. It can return a promise.
 	 *
 	 * @param {string} item The name of the item to get
-	 * @param {func(mixed)} callback Optional. If specified, the callback that will be called
+	 * @param {func(Item)} callback Optional. If specified, the callback that will be called
 	 *	 on completion. Will receive null on error
 	 * @return {Promise} If callback not specified. True otherwise.
 	 */
 	this.getItem = function(name, callback) {
-		var promise = localforage.getItem(ITEM_PREF+name);
+		var promise = localforage.getItem(ITEM_PREF+name).then(function(result) {
+			var item = new Item(name, result[DONE_KEY]);
+			return item;
+		});
 		if (typeof callback != 'function') return promise;
 		else {
 			promise.then(function(result) {
-				var item = {name: name, done: result[DONE_KEY]};
 				callback(item);
 			}).catch(function(err) {
 				self._error(err, callback);

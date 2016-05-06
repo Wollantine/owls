@@ -46,8 +46,10 @@ module.exports = function($scope, $mdDialog, $mdToast, storage) {
 		if (self.list.updateItems) {
 			console.log(self.list.name + "  " + self.list.updateItems)
 			storage.getAllItems(self.list.name, function(list) {
-				$scope.items = list.items;
-				$scope.archivedItems = list.archive;
+				$scope.$apply(function() {
+					$scope.items = list.items;
+					$scope.archivedItems = list.archive;
+				});
 			});
 		}
 	});
@@ -101,7 +103,7 @@ module.exports = function($scope, $mdDialog, $mdToast, storage) {
 				else {
 					var item = {name: newItem, done: false};
 					$scope.items.push(item);
-					storage.addItem($scope.list.name, newItem, angular.noop);
+					storage.addItem(self.list.name, newItem, angular.noop);
 				}
 			}
 			// Show toast

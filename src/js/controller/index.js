@@ -5,7 +5,7 @@ var app = require('angular').module('owls');
 app.controller('MainCtrl', function(storage) {
 	var self = this;
 
-	this.currentList = {name: 'Shopping List', updateItems: false};
+	this.currentList = {name: null, updateItems: false};
 
 	this.onListChange = function(list, updateItems) {
 		self.currentList.name = list;

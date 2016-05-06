@@ -3,6 +3,7 @@
 var localforage = require('localforage');
 var _ = require('underscore');
 var List = require('../dto/List');
+var Item = require('../dto/Item');
 
 /**                 LIST GATEWAY                 **/
 module.exports = function(errorManager, itemGateway) {
@@ -95,8 +96,38 @@ module.exports = function(errorManager, itemGateway) {
 	 * @return true
 	 */
 	this.getAllItems = function(listName, callback) {
-		var list = new List(listName, [{name: listName, done: true}], []);
-		callback(list);
+		localforage.getItem(LIST_PREF+listName).then(function(listContents) {
+			// Retrieve the items in the archive
+			var archive = [];
+			for (var i = 0; i < listContents[ARCHIVE_KEY].length; i++) {
+				// We forge new items with done=false, as it is irrellevant for the items
+				// in the archive (they are always retrieved from the archive as not done).
+				var newItem = new Item(listContents[ARCHIVE_KEY][i], false);
+				archive.push(newItem);
+			}
+
+			// Retrieve the rest of items
+			var promises = [];
+			for (var i = 0; i < listContents[ACTUAL_KEY].length; i++) {
+				promises.push(itemGateway.getItem(listContents[ACTUAL_KEY][i]));
+			}
+			// Wait for all of them
+			Promise.all(promises).then(function(results) {
+				var actual = [];
+				// The array of values in results maintains the order of the original
+				// iterable object promises as per the Promise.all specifications.
+				for (var i = 0; i < results.length; i++) {
+					actual.push(results[i]);
+				}
+				
+				var list = new List(listName, actual, archive);
+				callback(list);
+			}).catch(function(err) {
+				self._error(err, callback);
+			});
+		}).catch(function(err) {
+			self._error(err, callback);
+		});
 	};
 
 	/**
@@ -115,7 +146,7 @@ module.exports = function(errorManager, itemGateway) {
 			promises.push(localforage.removeItem(LIST_PREF+listName));
 
 			// Delete all the items in the list
-			for (var i = items.length - 1; i >= 0; i--) {
+			for (var i = 0; i < items.length; i++) {
 				promises.push(itemGateway.deleteItem(items[i]));
 			}
 

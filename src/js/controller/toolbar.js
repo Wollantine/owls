@@ -54,8 +54,10 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 		.then(function(result) {
 			$scope.lists.push(result);
 			$scope.currentList = result;
-			self.onListChange({list: result, updateProducts: true});
-			storage.addList(result, angular.noop);
+			// Make sure the list of items is updated AFTER the list has been created
+			storage.addList(result, function() {
+				self.onListChange({list: result, updateProducts: true});
+			});
 			storage.selectList(result, angular.noop);
 		});
 	};

@@ -28,6 +28,9 @@ module.exports = function($scope, $mdDialog, $mdToast, storage) {
 
 	$scope.addItem = function($event) {
 		var DialogController = require('./new-list-dialog.js');
+		// Hide any ongoing toast
+		$mdToast.hide();
+		// Show the dialog
 		var confirm = $mdDialog.show({
 			controller: DialogController,
 			controllerAs: "ctrl",

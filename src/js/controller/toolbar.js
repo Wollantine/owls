@@ -36,6 +36,9 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 	// Shows a dialog asking to insert the name for the new list
 	$scope.showPrompt = function($event) {
 		var DialogController = require('./new-list-dialog');
+		// Hide any ongoing toast
+		$mdToast.hide();
+		// Show the dialog
 		var confirm = $mdDialog.show({
 			controller: DialogController,
 			controllerAs: "ctrl",
@@ -68,6 +71,9 @@ module.exports = function($scope, $mdMenu, $mdDialog, $mdToast, storage){
 
 	$scope.editList = function($event, list) {
 		var DialogController = require('./new-list-dialog');
+		// Hide any ongoing toast
+		$mdToast.hide();
+		// Show the dialog
 		var confirm = $mdDialog.show({
 			controller: DialogController,
 			controllerAs: "ctrl",

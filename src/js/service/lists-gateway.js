@@ -13,6 +13,10 @@ module.exports = function(errorManager, listGateway) {
 	// Starting lists
 	var STARTING_LISTS = ['Shopping List'];
 
+	// Remembers if this is the first time in this device (and
+	//   hence some introduction might be needed).
+	this._isFirstTimeUse = false;
+
 	var self = this;
 
 
@@ -87,6 +91,17 @@ module.exports = function(errorManager, listGateway) {
 	};
 
 	/**
+	 * Checks if this device has been used by this app before (it has some list stored).
+	 *
+	 * @param {func(boolean)} callback The callback to be called.
+	 * @return true
+	 */
+	this.isFirstTimeUse = function(callback) {
+		callback(self._isFirstTimeUse);
+		return true;
+	};
+
+	/**
 	 * IMPORTANT NOTE: This should be the first function called.
 	 * Gets the array of lists stored in the device. If no lists are present,
 	 * it creates a set of starting lists that the user can change later.
@@ -100,6 +115,7 @@ module.exports = function(errorManager, listGateway) {
 		localforage.getItem(LISTS_KEY).then(function(values){
 			// If this is the first use, initialize starting lists
 			if (values === null) {
+				self._isFirstTimeUse = true;
 				for (var i = STARTING_LISTS.length - 1; i >= 0; i--) {
 					self.addList(STARTING_LISTS[i], function(result) {
 						if (result === null) error = true;

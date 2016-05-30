@@ -13,7 +13,10 @@
 
 
 <md-toolbar>
-  <toolbar on-list-change="ctrl.onListChange(list, updateProducts)"></toolbar>
+  <toolbar 
+  	on-list-change="ctrl.onListChange(list, updateProducts)"
+  	on-first-use="ctrl.onFirstUse()">
+  </toolbar>
 </md-toolbar>
 
 

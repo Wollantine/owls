@@ -1,11 +1,11 @@
 <md-button class="md-fab md-fab-bottom-right md-primary" aria-label="Add item" style="position:fixed"
-	ng-click="addItem($event)">
+	ng-click="addItem($event)" data-intro="Click here to add new items" data-position="top">
   <md-icon>add</md-icon>
 </md-button>
 
 
 <section>
-	<md-subheader class="subheader md-no-sticky">Items</md-subheader>
+	<md-subheader class="subheader md-no-sticky" ng-if="items.length">Items</md-subheader>
 	<md-list class="no-padding">
 		<md-divider ng-repeat-start="item in items"></md-divider>
 		<md-list-item ng-repeat-end 
@@ -19,7 +19,7 @@
 </section>
 
 <section>
-	<md-subheader class="subheader md-no-sticky">Archive</md-subheader>
+	<md-subheader class="subheader md-no-sticky" ng-if="archivedItems.length">Archive</md-subheader>
 	<md-list class="padding-button">
 		<md-divider ng-repeat-start="item in archivedItems"></md-divider>
 		<md-list-item class="archived" ng-repeat-end 

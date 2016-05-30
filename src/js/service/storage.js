@@ -82,6 +82,22 @@ module.exports = function(listsGateway, listGateway, itemGateway) {
 	};
 
 	/**
+	 * Checks if this device has been used by this app before (it has some list stored).
+	 *
+	 * @param {func(boolean)} callback The callback to be called.
+	 * @return true
+	 */
+	this.isFirstTimeUse = function(callback) {
+		if (!this.init) {
+			this.getLists(function() {
+				self.init = listsGateway.isFirstTimeUse(callback);
+			});
+		}
+		else listsGateway.isFirstTimeUse(callback);
+		return true;
+	};
+	
+	/**
 	 * Gets the array of lists stored in the device. If no lists are present,
 	 * it creates a set of starting lists that the user can change later.
 	 * The starting list is defined in STARTING_LISTS.

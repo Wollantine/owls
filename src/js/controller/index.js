@@ -15,7 +15,11 @@ app.controller('MainCtrl', function(storage) {
 		self.currentList.name = list;
 		self.currentList.updateItems = updateItems;
 		console.log(self.currentList.name+"  "+self.currentList.updateItems);
-	}
+	};
+
+	this.onFirstUse = function() {
+		self.showHelp = true;
+	};
 
 });
 
@@ -26,7 +30,8 @@ app.component('toolbar', {
 	controller: 'ToolbarCtrl',
 	templateUrl: './views/toolbar.html',
 	bindings: {
-		onListChange: '&'
+		onListChange: '&',
+		onFirstUse: '&'
 	}
 });
 

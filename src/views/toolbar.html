@@ -11,7 +11,7 @@
           {{list}}
         </md-button>
       </md-menu-item>
-      <md-menu-divider></md-menu-divider>
+      <md-menu-divider ng-if="lists.length > 1"></md-menu-divider>
       <md-menu-item>
         <md-button ng-click="showPrompt($event)">
           <md-icon>add</md-icon>
